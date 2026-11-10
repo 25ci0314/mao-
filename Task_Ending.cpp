@@ -17,8 +17,7 @@ namespace  Ending
 	bool  Resource::Initialize()
 	{
 		//‰æ‘œ
-		this->imgB = DG::Image::Create("./data/image/board.png");
-		this->imgBG = DG::Image::Create("./data/image/haikei.png");
+		this->imgBG = DG::Image::Create("./data/image/–‚‰¤éV’z01.png");
 		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
 		this->imgS = DG::Image::Create("./data/image/æè02.png");
 		this->imgK = DG::Image::Create("./data/image/Œãè01.png");
