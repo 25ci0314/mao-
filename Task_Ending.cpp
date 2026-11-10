@@ -23,6 +23,7 @@ namespace  Ending
 		this->imgK = DG::Image::Create("./data/image/後手01.png");
 		this->imgE = DG::Image::Create("./data/image/Elogo.png");
 		this->imgKM = DG::Image::Create("./data/image/紙吹雪.png");
+		this->imgHensai = DG::Image::Create("./data/image/返済ロゴ.png");
 		
 		//サウンドエフェクト
 		se::LoadFile("push", "./data/sound/se/将棋・駒を指す03改良版.wav");
@@ -39,7 +40,7 @@ namespace  Ending
 	//リソースの解放
 	bool  Resource::Finalize()
 	{
-		this->imgB.reset();
+		this->imgHensai.reset();
 		this->imgBG.reset();
 		this->imgE.reset();
 		this->imgK.reset();
@@ -116,7 +117,11 @@ namespace  Ending
 			se::Play("push");
 		}
 		
-		
+		if (inp.S1.down) {
+			ge->StartCounter("test", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+		}
+
 		if (ge->getCounterFlag("test") == ge->LIMIT || this->ET > 94 * 60) {
 			this->Kill();
 		}
@@ -152,6 +157,21 @@ namespace  Ending
 		}
 
 		if (Tcnt > 30) {
+			//借金返済ロゴ
+			if (BChara::winner == 0)
+			{
+				ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
+				ML::Box2D src(0, 0, 2023, 777);
+				this->res->imgHensai->Draw(draw, src);
+
+			}
+		}
+
+
+
+
+
+		/*if (Tcnt > 30) {
 			//先手勝利ロゴ
 			if (BChara::winner == 0)
 			{
@@ -160,7 +180,7 @@ namespace  Ending
 				this->res->imgS->Draw(draw, src);
 
 			}
-		}
+		}*/
 
 
 		if (Tcnt > 30) {
