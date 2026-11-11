@@ -159,6 +159,7 @@
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_StartTimer.cpp" />
     <ClCompile Include="Task_Title.cpp" />
+    <ClCompile Include="Task_UI.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="XI2018_Ver1_0.cpp" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_StartTimer.h" />
     <ClInclude Include="Task_Title.h" />
+    <ClInclude Include="Task_UI.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />
   </ItemGroup>
   <ItemGroup>
