@@ -24,7 +24,7 @@ namespace  Ending
 		this->imgS = DG::Image::Create("./data/image/先手02.png");
 		this->imgK = DG::Image::Create("./data/image/後手01.png");
 		this->imgE = DG::Image::Create("./data/image/Elogo.png");
-		this->imgKM = DG::Image::Create("./data/image/紙吹雪.png");
+		this->imgAme = DG::Image::Create("./data/image/ame02.png");
 		this->imgHensai = DG::Image::Create("./data/image/返済ロゴ.png");
 		
 		//サウンドエフェクト
@@ -34,7 +34,8 @@ namespace  Ending
 		//BGM 
 		bgm::LoadFile("ending_bgm", "./data/sound/bgm/Ebgm01.mp3");
 		bgm::VolumeControl("ending_bgm", 90);
-		
+		bgm::LoadFile("ending_bgm2", "./data/sound/bgm/運命02.mp3");
+		bgm::VolumeControl("ending_bgm", 90);
 
 		return true;
 	}
@@ -48,7 +49,7 @@ namespace  Ending
 		this->imgE.reset();
 		this->imgK.reset();
 		this->imgS.reset();
-		this->imgKM.reset();
+		this->imgAme.reset();
 		this->imgUI.reset();
 		return true;
 	}
@@ -60,7 +61,14 @@ namespace  Ending
 		__super::Initialize(defGroupName, defName, true);
 		//リソースクラス生成orリソース共有
 		this->res = Resource::Create();
-		bgm::Play("ending_bgm");
+		//シャイニングスター
+		if (BChara::winner == 0) {
+			bgm::Play("ending_bgm");
+		}
+		//運命
+		if (BChara::winner == 1) {
+			bgm::Play("ending_bgm2");
+		}
 		//★データ初期化
 		this->logoPosY = 270;
 		this->boardX = 336;
@@ -71,6 +79,7 @@ namespace  Ending
 		PosX = 640;
 		PosY = 610;
 		this->timecnt = 0;
+		this->logPX = 0;
 		this->Tcnt = 0;
 		this->ET = 0;
 
@@ -83,7 +92,7 @@ namespace  Ending
 	bool  Object::Finalize()
 	{
 		bgm::Stop("ending_bgm");
-
+		bgm::Stop("ending_bgm2");
 		//★データ＆タスク解放
 
 
@@ -132,8 +141,14 @@ namespace  Ending
 		if (logPY >= 720 * 3) {
 			this->logPY = 1440;
 		}
+
+		if (logPX <= -1280) {
+			this->logPX = 0;
+		}
+
 		if (Tcnt > 120) {
 			this->logPY = logPY + 10;
+			this->logPX = logPX - 2;
 		}
 
 		this->Tcnt++;
@@ -150,6 +165,7 @@ namespace  Ending
 			this->res->imgBG->Draw(dbg, sbg);
 		}
 
+		//失敗時の背景
 		if (BChara::winner == 1) {
 			ML::Box2D draw(0, 0, 1280, 720);
 			ML::Box2D src(0, 0, 1920, 1080);
@@ -157,11 +173,15 @@ namespace  Ending
 		}
 
 		//紙吹雪
-		if (Tcnt > 120) {
-			for (int i = -3; i < 0; i++) {
-				ML::Box2D draw(0, logPY + 720 * i, 1280, 720);
-				ML::Box2D src(0, 0, 3000, 2250);
-				this->res->imgKM->Draw(draw, src);
+		if (BChara::winner == 1) {
+			if (Tcnt > 120) {
+				for (int j = -1; j < 2; j++) {
+					for (int i = -3; i < 0; i++) {
+						ML::Box2D draw(logPX + 1280 * j, logPY + 720 * i, 1280, 720);
+						ML::Box2D src(0, 0, 1920, 1080);
+						this->res->imgAme->Draw(draw, src);
+					}
+				}
 			}
 		}
 
