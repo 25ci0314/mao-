@@ -8,6 +8,7 @@
 #include "Task_Board.h"
 #include "sound.h"
 #include "Task_Player.h"
+#include "BChara.h"
 
 
 namespace  Game
@@ -87,7 +88,12 @@ namespace  Game
 	//「更新」１フレーム毎に行う処理
 	void Object::UpDate()
 	{
-
+		auto inp = ge->in1->GetState();
+		if (inp.S1.down) {
+			BChara::winner = 1;
+			ge->StartCounter("test", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+		}
 		//---------------------------------------------------------------
 		//フェードが終了したらゲームを終了
 		if (ge->getCounterFlag("test") == ge->LIMIT)
