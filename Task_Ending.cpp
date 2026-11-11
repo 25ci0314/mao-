@@ -18,6 +18,7 @@ namespace  Ending
 	{
 		//‰æ‘œ
 		this->imgBG = DG::Image::Create("./data/image/–‚‰¤éV’z01.png");
+		this->imgMaoju = DG::Image::Create("./data/image/–‚‰¤é03.png");
 		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
 		this->imgS = DG::Image::Create("./data/image/æè02.png");
 		this->imgK = DG::Image::Create("./data/image/Œãè01.png");
@@ -30,7 +31,7 @@ namespace  Ending
 		se::SetVolume("push", 100);
 
 		//BGM 
-		bgm::LoadFile("ending_bgm", "./data/sound/bgm/Ebgm00.mp3");
+		bgm::LoadFile("ending_bgm", "./data/sound/bgm/Ebgm01.mp3");
 		bgm::VolumeControl("ending_bgm", 90);
 		
 
@@ -41,6 +42,7 @@ namespace  Ending
 	bool  Resource::Finalize()
 	{
 		this->imgHensai.reset();
+		this->imgMaoju.reset();
 		this->imgBG.reset();
 		this->imgE.reset();
 		this->imgK.reset();
@@ -140,11 +142,17 @@ namespace  Ending
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
-		//”wŒi
-		{
+		//•ÔÏ¬Œ÷”wŒi
+		if (BChara::winner == 0){
 			auto dbg = ML::Box2D(0, 0, 1280, 720);
 			auto sbg = ML::Box2D(0, 0, 1920, 1080);
 			this->res->imgBG->Draw(dbg, sbg);
+		}
+
+		if (BChara::winner == 1) {
+			ML::Box2D draw(0, 0, 1280, 720);
+			ML::Box2D src(0, 0, 1920, 1080);
+			this->res->imgMaoju->Draw(draw, src);
 		}
 
 		//†á
