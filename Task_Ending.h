@@ -23,7 +23,7 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//‹¤—L‚·‚é•Ï”‚Í‚±‚±‚É’Ç‰Á‚·‚é
-		DG::Image::SP  imgHensai, imgBG, imgMaoju, imgUI, imgS, imgK, imgE,imgAme;
+		DG::Image::SP  imgHensai, imgBG, imgMaoju, imgUI, imgS, imgK, imgE,imgAme, imgKM;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
