@@ -4,7 +4,6 @@
 #include "MyPG.h"
 #include "Task_Player.h"
 #include "Task_Board.h"
-#include <cmath>
 
 namespace Player
 {
