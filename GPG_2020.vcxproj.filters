@@ -112,22 +112,16 @@
     <ClCompile Include="BChara.cpp">
       <Filter>MyPG\Task</Filter>
     </ClCompile>
-    <ClCompile Include="Task_Koma.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Board.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Cursor.cpp">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Task_Game_Random.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
     <ClCompile Include="Task_AI.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
     <ClCompile Include="Task_StartTimer.cpp">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Task_Player.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
   </ItemGroup>
@@ -208,22 +202,16 @@
     <ClInclude Include="BChara.h">
       <Filter>MyPG\Task</Filter>
     </ClInclude>
-    <ClInclude Include="Task_Koma.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
     <ClInclude Include="Task_Board.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Task_Cursor.h">
-      <Filter>MyPG\Task\Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Task_Game_Random.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
     <ClInclude Include="Task_AI.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
     <ClInclude Include="Task_StartTimer.h">
+      <Filter>MyPG\Task\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Task_Player.h">
       <Filter>MyPG\Task\Game</Filter>
     </ClInclude>
   </ItemGroup>

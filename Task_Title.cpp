@@ -8,7 +8,6 @@
 #include "sound.h"
 
 #include "Task_Game.h"
-#include "Task_Game_Random.h"
 #include "Task_AI.h"
 
 namespace  Title
@@ -161,31 +160,11 @@ namespace  Title
 	{
 		bgm::Stop("bgm1");
 
-		if (!ge->QuitFlag() && this->nextTaskCreate) {
-
-			//通常モード
-			if (gameMode == GameMode::Normal) {
-
-				Game::Object::Create(true);
-
-				//通常CPU戦
-				if (battleMode == BattleMode::CPU) {
-					AI::Object::Create(true);
-				}
-			}
-
-			//ランダムモード
-			if (gameMode == GameMode::Random) {
-
-				Game_Random::Object::Create(true);
-
-				//ランダムCPU戦
-				if (battleMode == BattleMode::CPU) {
-					AI::Object::Create(true);
-				}
-			}
+		if (!ge->QuitFlag() && this->nextTaskCreate)
+		{
+			//魔王配達のゲーム本編を生成
+			Game::Object::Create(true);
 		}
-
 		return  true;
 	}
 	//-------------------------------------------------------------------

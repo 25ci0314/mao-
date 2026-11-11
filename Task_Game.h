@@ -4,13 +4,12 @@
 //ゲーム本編
 //-------------------------------------------------------------------
 #include "GameEngine_Ver3_83.h"
-#include "Task_Koma.h"
 
 namespace  Game
 {
 	//タスクに割り当てるグループ名と固有名
 	const  string  defGroupName("本編");	//グループ名
-	const  string  defName(		"統括");	//タスク名
+	const  string  defName("統括");	//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -24,7 +23,7 @@ namespace  Game
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//共有する変数はここに追加する
-		DG::Image::SP	img, imgSE, imgGO, imgTE, imgNO, imgBA, imgSU, imgNKR, imgBY, imgRed;
+		DG::Image::SP	img, imgSE, imgGO, imgTE, imgNO, imgBA, imgSU, imgNKR, imgBY;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -50,18 +49,11 @@ namespace  Game
 		//追加したい変数・メソッドはここに追加する
 		DG::Font::SP TestFont;
 
-		//駒を1枚生成する
-		void CreateKoma(
-			int boardX_,
-			int boardY_,
-			Koma::Object::Type type_,
-			Koma::Object::Owner owner_);
 
 
-		int timeLimit;		// 残り時間（フレーム）
-		int Cnt;
-		bool gameStart;		// ゲーム開始フラグ
-		bool gameEnd;		// ゲーム終了フラグ
+
+		int timeLimit;     // 残り時間（フレーム）
+		bool gameEnd;      // ゲーム終了フラグ
 
 		bool cpuBattle;
 	};

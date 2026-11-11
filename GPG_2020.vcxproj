@@ -149,14 +149,14 @@
     <ClCompile Include="MyPG.cpp" />
     <ClCompile Include="randomLib.cpp" />
     <ClCompile Include="sound.cpp" />
-    <ClCompile Include="Task_AI.cpp" />
+    <ClCompile Include="Task_AI.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="Task_Board.cpp" />
-    <ClCompile Include="Task_Cursor.cpp" />
     <ClCompile Include="Task_Effect00.cpp" />
     <ClCompile Include="Task_Ending.cpp" />
     <ClCompile Include="Task_Game.cpp" />
-    <ClCompile Include="Task_Game_Random.cpp" />
-    <ClCompile Include="Task_Koma.cpp" />
+    <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_StartTimer.cpp" />
     <ClCompile Include="Task_Title.cpp" />
     <ClCompile Include="WinMain.cpp" />
@@ -186,12 +186,10 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="Task_AI.h" />
     <ClInclude Include="Task_Board.h" />
-    <ClInclude Include="Task_Cursor.h" />
     <ClInclude Include="Task_Effect00.h" />
     <ClInclude Include="Task_Ending.h" />
     <ClInclude Include="Task_Game.h" />
-    <ClInclude Include="Task_Game_Random.h" />
-    <ClInclude Include="Task_Koma.h" />
+    <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_StartTimer.h" />
     <ClInclude Include="Task_Title.h" />
     <ClInclude Include="XI2018_Ver1_0.h" />

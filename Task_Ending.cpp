@@ -7,6 +7,7 @@
 #include  "Task_Game.h"
 #include "randomLib.h"
 #include "sound.h"
+#include"BChara.h"
 
 namespace  Ending
 {
