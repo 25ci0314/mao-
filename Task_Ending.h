@@ -23,7 +23,7 @@ namespace  Ending
 		static   WP  instance;
 		static  Resource::SP  Create();
 		//‹¤—L‚·‚é•Ï”‚Í‚±‚±‚É’Ç‰Á‚·‚é
-		DG::Image::SP  imgHensai, imgBG, imgMaoju, imgUI, imgS, imgK, imgE,imgKM;
+		DG::Image::SP  imgHensai, imgBG, imgMaoju, imgUI, imgS, imgK, imgE,imgAme;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
@@ -53,6 +53,7 @@ namespace  Ending
 		int			lPosX;
 		int			lPosY;
 		int			logPY;
+		int			logPX;
 		int			PosX;
 		int			PosY;
 		int			timecnt;
