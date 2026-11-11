@@ -17,10 +17,8 @@ namespace  Game
 	//リソースの初期化
 	bool  Resource::Initialize()
 	{
-		bgm::LoadFile("normal_bgm", "./data/sound/bgm/bgm_normal.mp3");
+		bgm::LoadFile("normal_bgm", "./data/sound/bgm/ゆるくておそい天国と地獄.mp3");
 		this->imgSU = DG::Image::Create("./data/image/数文字素材02.png");
-		this->imgNKR = DG::Image::Create("./data/image/残り02.png");
-		this->imgBY = DG::Image::Create("./data/image/秒02.png");
 		return true;
 	}
 	//-------------------------------------------------------------------
