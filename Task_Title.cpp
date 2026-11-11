@@ -31,7 +31,7 @@ namespace  Title
 		explanation,//ê‡ñæ
 	};
 
-	TitleState state = TitleState::ModeSelect;
+	TitleState state = TitleState::Title;
 
 
 
