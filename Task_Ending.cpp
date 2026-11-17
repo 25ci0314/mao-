@@ -30,6 +30,8 @@ namespace  Ending
 		//サウンドエフェクト
 		se::LoadFile("push", "./data/sound/se/将棋・駒を指す03改良版.wav");
 		se::SetVolume("push", 100);
+		se::LoadFile("ame", "./data/sound/se/雨が降る1.wav");
+		se::SetVolume("ame", 100);
 
 		//BGM 
 		bgm::LoadFile("ending_bgm", "./data/sound/bgm/Ebgm01.mp3");
@@ -93,6 +95,7 @@ namespace  Ending
 	{
 		bgm::Stop("ending_bgm");
 		bgm::Stop("ending_bgm2");
+		se::Stop("ame");
 		//★データ＆タスク解放
 
 
@@ -150,6 +153,7 @@ namespace  Ending
 			this->logPY = logPY + 10;
 			this->logPX = logPX - 2;
 		}
+		
 
 		this->Tcnt++;
 		this->timecnt++;
@@ -172,7 +176,7 @@ namespace  Ending
 			this->res->imgMaoju->Draw(draw, src);
 		}
 
-		//紙吹雪
+		//雨
 		if (BChara::winner == 1) {
 			if (Tcnt > 120) {
 				for (int j = -1; j < 2; j++) {
@@ -182,6 +186,9 @@ namespace  Ending
 						this->res->imgAme->Draw(draw, src);
 					}
 				}
+			}
+			if (Tcnt == 180) {
+				se::Play("ame");
 			}
 		}
 
