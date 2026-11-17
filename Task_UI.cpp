@@ -11,6 +11,7 @@ namespace  UI
 	//ƒŠƒ\[ƒX‚Ì‰Šú‰»
 	bool  Resource::Initialize()
 	{
+		this->font = DG::Image::Create("./data/image/pixel_font.png");
 		return true;
 	}
 	//-------------------------------------------------------------------

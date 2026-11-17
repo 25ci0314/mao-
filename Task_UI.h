@@ -4,6 +4,7 @@
 //
 //-------------------------------------------------------------------
 #include "BChara.h"
+#include "Task_StartTimer.h"
 
 namespace  UI
 {
@@ -24,6 +25,7 @@ namespace  UI
 		static  Resource::SP  Create();
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//共有する変数はここに追加する
+		DG::Image::SP font;
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BChara
@@ -48,5 +50,7 @@ namespace  UI
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
+		const int limit = 60 * 60 * 3;
+		int time;
 	};
 }
