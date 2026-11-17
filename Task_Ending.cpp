@@ -32,12 +32,14 @@ namespace  Ending
 		se::SetVolume("push", 100);
 		se::LoadFile("ame", "./data/sound/se/雨が降る1.wav");
 		se::SetVolume("ame", 100);
+		se::LoadFile("kami", "./data/sound/se/落雷4.wav");
+		se::SetVolume("kami", 100);
 
 		//BGM 
 		bgm::LoadFile("ending_bgm", "./data/sound/bgm/Ebgm01.mp3");
 		bgm::VolumeControl("ending_bgm", 90);
 		bgm::LoadFile("ending_bgm2", "./data/sound/bgm/運命02.mp3");
-		bgm::VolumeControl("ending_bgm", 90);
+		bgm::VolumeControl("ending_bgm2", 95);
 
 		return true;
 	}
@@ -86,7 +88,7 @@ namespace  Ending
 		this->ET = 0;
 
 		//★タスクの生成
-
+		srand((unsigned)time(NULL));
 		return  true;
 	}
 	//-------------------------------------------------------------------
@@ -96,6 +98,7 @@ namespace  Ending
 		bgm::Stop("ending_bgm");
 		bgm::Stop("ending_bgm2");
 		se::Stop("ame");
+		se::Stop("kami");
 		//★データ＆タスク解放
 
 
@@ -192,16 +195,27 @@ namespace  Ending
 			}
 		}
 
-		if (Tcnt > 30) {
+		//雷
+		if (BChara::winner == 1) {
+			if (Tcnt % 301 ==300 ) {
+				ML::Vec2 pos;
+				pos.x = GetRandom((float)0.f, (float)ge->screen2DWidth);
+				pos.y = 0;
+				ge->CreateEffect(9, pos);
+				se::Play("kami");
+			}
+		}
+
 			//借金返済ロゴ
-			if (BChara::winner == 0)
-			{
+		if (BChara::winner == 0)
+		{
+			if (Tcnt > 30) {
 				ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
 				ML::Box2D src(0, 0, 2023, 777);
 				this->res->imgHensai->Draw(draw, src);
-
 			}
 		}
+		
 
 
 

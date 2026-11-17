@@ -192,6 +192,24 @@ namespace MyPG
 				e->countMax = 120;
 			}
 			break;
+
+		case 9://雷　アニメーション
+			if (auto e = Effect00::Object::Create(true)) {
+				e->filename = "data/effect/kami.png";
+				e->resSizeX = 192;
+				e->resSizeY = 256;
+				e->drawSizeX = 384;
+				e->drawSizeY = 1700;
+				e->pos.x = pos.x;
+				e->pos.y = pos.y;
+
+				e->animResNum = 8;
+				e->animMax = 32;
+				e->addAnim = 0.6f;
+
+				e->countMax = 180;
+			}
+			break;
 	
 		case 99://フェードアウトしてからフェードイン 90フレーム
 			if (auto e = Effect00::Object::Create(true)) {
