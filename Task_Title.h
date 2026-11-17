@@ -40,13 +40,18 @@ namespace  Title
 		DG::Image::SP	TitleLogo02;
 		DG::Image::SP	TitleLogo03;
 		DG::Image::SP	StartLogo;//ボタンを押してね画像
-		DG::Image::SP	mode;//モード選択画像
+		DG::Image::SP	ruru;//モード選択画像
 		DG::Image::SP	twobattle;//二人対戦画像
 		DG::Image::SP	cpubattle;//CPU戦画像
 		DG::Image::SP	Yes;//はい画像
 		DG::Image::SP	No;//いいえ画像
 		DG::Image::SP	BG;//黒背景画像
-		DG::Image::SP	setumei;//説明画像
+		DG::Image::SP	setumei0;//説明画像1ページ
+		DG::Image::SP	setumei1;//説明画像2ページ
+		DG::Image::SP	setumei2;//説明画像3ページ
+		DG::Image::SP	foot;//足
+		DG::Image::SP	horse;//馬
+		DG::Image::SP	doragon;//ドラゴン
 		DG::Image::SP	GB;//緑背景画像
 		DG::Font::SP    fontA;//現在の状態を表示(通常モード)
 		DG::Font::SP    fontB;//現在の状態を表示(ランダムモード)

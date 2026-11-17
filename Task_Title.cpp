@@ -2,7 +2,7 @@
 //タイトル画面
 //-------------------------------------------------------------------
 #include  "MyPG.h"
-#include  "Task_Title.h"
+#include  "Task_Title.h"      
 #include "randomLib.h"
 #include  "Task_Effect00.h"
 #include "sound.h"
@@ -27,7 +27,10 @@ namespace  Title
 		Title,//タイトル画面
 		ModeSelect,//セレクト画面
 		confirmation,//確認
-		explanation,//説明
+		explanation0,//説明ページ1
+		explanation1,//説明ページ2
+		explanation2,//説明ページ3
+
 	};
 
 	TitleState state = TitleState::Title;
@@ -41,6 +44,12 @@ namespace  Title
 	};
 
 	BattleMode battleMode = BattleMode::TwoPlayer;
+	enum class MoveMode {
+		Foot,	//足
+		Horse,	//馬
+		Doragon,//ドラゴン
+	};
+	MoveMode moveMode = MoveMode::Foot;
 
 	Resource::WP  Resource::instance;
 	//-------------------------------------------------------------------
@@ -48,10 +57,10 @@ namespace  Title
 	bool  Resource::Initialize()
 	{
 
-		this->img = DG::Image::Create("./data/image/newsinTitle2.png");//背景画像
+		this->img = DG::Image::Create("./data/image/title.png");//背景画像
 		this->kyanseru = DG::Image::Create("./data/image/kyanseru.png"); //キャンセルボタン画像
 		this->state = DG::Image::Create("./data/image/state.png");//運ゲーか通常かを分ける
-		this->mode = DG::Image::Create("./data/image/mode.png");//モード選択画像
+		this->ruru = DG::Image::Create("./data/image/ru-ru.png");//モード選択画像
 		this->randommode = DG::Image::Create("./data/image/Randommode.png");//モード選択時のランダムモード
 		this->randommode1 = DG::Image::Create("./data/image/randommode1.png");//現在のモードがランダムモードであることを表示する画像
 		this->randommode2 = DG::Image::Create("./data/image/kakuninnRandomtwo.png");//現在のモードがランダムモードであることを表示する画像
@@ -65,7 +74,12 @@ namespace  Title
 		this->Yes = DG::Image::Create("./data/image/Yes.png");//はい画像
 		this->No = DG::Image::Create("./data/image/No.png");//いいえ画像
 		this->BG = DG::Image::Create("./data/image/BG0.png");//黒背景画像
-		this->setumei = DG::Image::Create("./data/image/setumei.png");//説明画像
+		this->setumei0 = DG::Image::Create("./data/image/setumei.png");//説明画像1ページ
+		this->setumei1 = DG::Image::Create("./data/image/kari1.png");//説明画像2ページ
+		this->setumei2 = DG::Image::Create("./data/image/kari2.jpg");//説明画像3ページ
+		this->foot = DG::Image::Create ("./data/image/foot.jpg");//足
+		this->horse = DG::Image::Create ("./data/image/horse.jpg");//馬
+		this->doragon = DG::Image::Create ("./data/image/doragon.jpg");//ドラゴン
 		this->GB = DG::Image::Create("./data/image/GB.png");//背景画像
 		this->fontA = DG::Font::Create("HGS教科書体", 40, 80);
 		this->fontB = DG::Font::Create("HGS教科書体", 40, 80);
@@ -82,7 +96,7 @@ namespace  Title
 		this->img.reset();
 		this->kyanseru.reset();
 		this->state.reset();
-		this->mode.reset();
+		this->ruru.reset();
 		this->randommode.reset();
 		this->randommode1.reset();
 		this->randommode2.reset();
@@ -96,7 +110,12 @@ namespace  Title
 		this->Yes.reset();
 		this->No.reset();
 		this->BG.reset();
-		this->setumei.reset();
+		this->setumei0.reset();
+		this->setumei1.reset();
+		this->setumei2.reset();
+		this->foot.reset ();
+		this->horse.reset ();
+		this->doragon.reset ();
 		this->GB.reset();
 		this->fontA.reset();
 		this->fontB.reset();
@@ -178,142 +197,149 @@ namespace  Title
 			timeCount = 30;
 		}
 
-		auto inp = this->controller->GetState();
+		
+		auto inp = ge->in1->GetState ();
 		auto ms = ge->mouse->GetState();
 		mPos.x = ms.pos.x;
 		mPos.y = ms.pos.y;
 		//マウス入力への対応
-		if (ms.LB.down)
-		{
+		if (ms.LB.down) {
+			
+			// キャンセルボタン
+			if (mPos.x >= 1180 && mPos.x <= 1280 &&
+				mPos.y >= 0 && mPos.y <= 100) {
+				se::Play ("se5");
+				state = TitleState::Title;  // タイトルへ戻る
+			}
 			//タイトル状態のとき
-			if (state == TitleState::Title)
-			{
-				//通常状態のとき
-				if (gameMode == GameMode::Normal) {
-					// 二人対戦
-					if (mPos.x >= 260 && mPos.x <= 615 &&
-						mPos.y >= 550 && mPos.y <= 720)
-					{
-						gameMode = GameMode::Normal;
-						battleMode = BattleMode::TwoPlayer;
+			if (state == TitleState::Title) {
+				// 二人対戦
+				if (mPos.x >= 260 && mPos.x <= 615 &&
+					mPos.y >= 550 && mPos.y <= 720) {
 
-						state = TitleState::confirmation;
-						se::Play("se4");
-					}
+					battleMode = BattleMode::TwoPlayer;
 
-					// CPU戦
-					if (mPos.x >= 660 && mPos.x <= 980 &&
-						mPos.y >= 550 && mPos.y <= 720)
-					{
-						gameMode = GameMode::Normal;
-						battleMode = BattleMode::CPU;
-
-						state = TitleState::confirmation;
-						se::Play("se4");
-					}
+					state = TitleState::ModeSelect;//セレクト画面へ
+					se::Play ("se4");
 				}
-				// モード選択
+
+				// CPU戦
+				if (mPos.x >= 660 && mPos.x <= 980 &&
+					mPos.y >= 550 && mPos.y <= 720) {
+
+					battleMode = BattleMode::CPU;
+					state = TitleState::ModeSelect;//セレクト画面へ
+					se::Play ("se4");
+				}
+
+				//説明画面へ
 				if (mPos.x >= 0 && mPos.x <= 350 &&
-					mPos.y >= 300 && mPos.y <= 500)
-				{
-					se::Play("se4");
-					state = TitleState::ModeSelect;//モードセレクト状態に
-				}
-				//ランダム状態のとき
-				if (gameMode == GameMode::Random) {
-					// 二人対戦
-					if (mPos.x >= 260 && mPos.x <= 615 &&
-						mPos.y >= 550 && mPos.y <= 720)
-					{
-						gameMode = GameMode::Random;
-						battleMode = BattleMode::TwoPlayer;
+					mPos.y >= 300 && mPos.y <= 500) {
 
-						se::Play("se4");
-						state = TitleState::confirmation;
-					}
-
-					// CPU戦
-					if (mPos.x >= 660 && mPos.x <= 980 &&
-						mPos.y >= 550 && mPos.y <= 720)
-					{
-
-						gameMode = GameMode::Random;
-						battleMode = BattleMode::CPU;
-
-						se::Play("se4");
-						state = TitleState::confirmation;
-					}
+					se::Play ("se4");
+					state = TitleState::explanation0;//説明状態に
 				}
 			}
-			//モード選択画面の時
-			else if (state == TitleState::ModeSelect)
+
+			
+
+			//セレクト画面
+			if (state == TitleState::ModeSelect)
 			{
-				// ランダム
-				if (mPos.x >= 200 && mPos.x <= 550 &&
-					mPos.y >= 440 && mPos.y <= 550)
+			
+					//足
 				{
-					gameMode = GameMode::Random; //ランダム状態へ
-					se::Play("se4");
-					state = TitleState::Title;   // タイトルへ戻る
-				}
-
-				// 通常
-				if (mPos.x >= 600 && mPos.x <= 940 &&
-					mPos.y >= 450 && mPos.y <= 540)
-				{
-					gameMode = GameMode::Normal;//通常状態へ
-					se::Play("se4");
-					state = TitleState::Title;  // タイトルへ戻る
-				}
-				// キャンセルボタン
-				if (mPos.x >= 1180 && mPos.x <= 1280 &&
-					mPos.y >= 0 && mPos.y <= 100)
-				{
-					se::Play("se5");
-					state = TitleState::Title;  // タイトルへ戻る
-				}
-			}
-			//確認画面の時
-			if (state == TitleState::confirmation) {
-				// はい
-				if (mPos.x >= 370 && mPos.x <= 585 &&
-					mPos.y >= 465 && mPos.y <= 520) {
-					if (gameMode == GameMode::Random) {//ランダムモードなら
-						se::Play("se5");
-						state = TitleState::explanation;
-					}
-					else if (gameMode == GameMode::Normal) {//通常モードなら
-						ge->StartCounter("test", 45);//ゲーム画面に移行
-						ge->CreateEffect(98, ML::Vec2(0, 0));
-						se::Play("se3");
-						state = TitleState::ModeSelect;//エンディングの後に最初の状態に戻すため
-
+					if (mPos.x >= 0 && mPos.x <= 426 &&
+						mPos.y >= 465 && mPos.y <= 520) {
+						se::Play ("se4");
+						state = TitleState::confirmation;//確認画面へ
+						moveMode = MoveMode::Foot; //移動方法を足に
 					}
 				}
-				// いいえ
-				if (mPos.x >= 665 && mPos.x <= 890 &&
-					mPos.y >= 465 && mPos.y <= 520) {
-					state = TitleState::Title;//タイトルに戻す
-					se::Play("se5");
+				//馬
+				{
+					if (mPos.x >= 427 && mPos.x <= 852 &&
+						mPos.y >= 465 && mPos.y <= 520) {
+						se::Play ("se4");
+						state = TitleState::confirmation;//確認画面へ
+						moveMode = MoveMode::Horse;//移動方法を馬に
+					}
 				}
+				//ドラゴン
+				{
+					if (mPos.x >= 853 && mPos.x <= 1278 &&
+						mPos.y >= 465 && mPos.y <= 520) {
+						se::Play ("se4");
+						state = TitleState::confirmation;//確認画面へ
+						moveMode = MoveMode::Doragon;//移動方法をドラゴンに
+					}
+				}
+			
+				
 			}
-			//説明画面
-			if (state == TitleState::explanation) {
+
+		
+
+			//説明画面1ページ
+			if (state == TitleState::explanation0) {
 				// はい
 				if (mPos.x >= 370 && mPos.x <= 600 &&
-					mPos.y >= 550 && mPos.y <= 615)
-				{
-					ge->StartCounter("test", 45);//ゲーム画面に移行
-					ge->CreateEffect(98, ML::Vec2(0, 0));
-					se::Play("se3");
-					state = TitleState::ModeSelect;//エンディングの後に最初の状態に戻すため
+					mPos.y >= 550 && mPos.y <= 615) {
+					state = TitleState::explanation1;//確認画面へ
+					se::Play("se5");
+					
 				}
-				// いいえ
+				/* いいえ
 				if (mPos.x >= 670 && mPos.x <= 890 &&
 					mPos.y >= 550 && mPos.y <= 615) {
 					state = TitleState::Title;//タイトルに戻す
+					se::Play ("se5");
+				}*/
+				
+			}
+			//説明画面2ページ
+			if (state == TitleState::explanation1) {
+				// はい
+				if (mPos.x >= 370 && mPos.x <= 600 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+					state = TitleState::explanation2;//確認画面へ
+
+				}
+				 //いいえ
+				if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+					state = TitleState::explanation0;//タイトルに戻す
+					se::Play ("se5");
+				}
+
+			}
+			//説明画面3ページ
+			if (state == TitleState::explanation2) {
+				/* はい
+				if (mPos.x >= 370 && mPos.x <= 600 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+					state = TitleState::explanation2;//確認画面へ
+
+				}*/
+				//いいえ
+				if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+					state = TitleState::explanation1;//タイトルに戻す
 					se::Play("se5");
 				}
+
+			}
+
+
+		}
+		//確認画面の時
+		if (state == TitleState::confirmation) {
+			if (inp.S1.down) {
+				state = TitleState::Title;
+				ge->StartCounter ("test", 45);//ゲーム画面に移行
+				ge->CreateEffect (98, ML::Vec2 (0, 0));
+				se::Play ("se3");
+
 			}
 		}
 		int input = 0;
@@ -352,7 +378,7 @@ namespace  Title
 			draw.Offset(0, 0);
 			this->res->img->Draw(draw, src);
 		}
-		//現在の状態を表示(通常モード)
+		/*現在の状態を表示 (通常モード)
 		if (gameMode == GameMode::Normal)
 		{
 			ML::Box2D  draw(0, 0, 500, 200);
@@ -367,7 +393,7 @@ namespace  Title
 			ML::Box2D  src(0, 0, 2172, 724);
 			draw.Offset(0, 0);
 			this->res->randommode1->Draw(draw, src);
-		}
+		}*/
 
 		//タイトル状態のとき
 		if (state == TitleState::Title) {
@@ -396,7 +422,7 @@ namespace  Title
 				}
 
 				ML::Box2D src(0, 0, 1536, 1024);
-				this->res->mode->Draw(draw, src);
+				this->res->ruru->Draw(draw, src);
 			}
 			//二人で対戦画像
 			{
@@ -439,44 +465,68 @@ namespace  Title
 		//モードセレクト状態のとき
 		if (state == TitleState::ModeSelect)
 		{
-			// ランダム画像
+			// 足画像
 			{
 				ML::Box2D draw;
 
-				if (mPos.x >= 200 && mPos.x <= 550 &&
-					mPos.y >= 440 && mPos.y <= 550)
+				if (mPos.x >= 0 && mPos.x <= 426 &&
+					mPos.y >= 465 && mPos.y <= 520)
 					// 大きくする
 				{
-					draw = ML::Box2D(185, 420, 380, 150);
+					
+					draw = ML::Box2D (0, 420, 456, 150);
 				}
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D(200, 430, 350, 130);
+					draw = ML::Box2D (0, 430, 426, 130);
+				
 				}
 
-				ML::Box2D src(0, 0, 2172, 724);
-				this->res->randommode->Draw(draw, src);
+				ML::Box2D src (0, 0, 760, 612);
+				this->res->foot->Draw (draw, src);
 			}
 
-			// 通常画像
+			// 馬画像
 			{
 				ML::Box2D draw;
 
-				if (mPos.x >= 600 && mPos.x <= 950 &&
-					mPos.y >= 400 && mPos.y <= 600)
+				if (mPos.x >= 427 && mPos.x <= 852 &&
+					mPos.y >= 465 && mPos.y <= 520) 
 					// 大きくする
 				{
-					draw = ML::Box2D(585, 390, 380, 220);
+				
+				draw = ML::Box2D (412, 420, 456, 150);
 				}
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D(600, 400, 350, 200);
+					draw = ML::Box2D (427, 400, 426, 200);
 				}
 
-				ML::Box2D src(0, 0, 1536, 1024);
-				this->res->tuuzyoumode->Draw(draw, src);
+				ML::Box2D src (0, 0, 1280, 1920);
+				this->res->horse->Draw (draw, src);
+			}
+			// ドラゴン画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 853 && mPos.x <= 1278 &&
+					mPos.y >= 465 && mPos.y <= 520) 
+					// 大きくする
+				{
+					
+					draw = ML::Box2D (838, 420, 456, 150);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D (853, 400, 426, 200);
+				}
+
+
+				ML::Box2D src (0, 0, 1080, 1040);
+				this->res->doragon->Draw (draw, src);
 			}
 			//キャンセル画像
 			{
@@ -498,7 +548,6 @@ namespace  Title
 				this->res->BG->Draw(draw, src);
 			}
 			//通常状態なら
-			if (gameMode == GameMode::Normal) {
 				if (battleMode == BattleMode::TwoPlayer) {
 					ML::Box2D draw(200, 200, 900, 250);
 					ML::Box2D  src(0, 0, 2172, 724);
@@ -513,8 +562,7 @@ namespace  Title
 					draw.Offset(0, 0);
 					this->res->tuuzyoumode3->Draw(draw, src);
 				}
-			}
-			else {
+			
 				if (battleMode == BattleMode::TwoPlayer) {
 					ML::Box2D draw(200, 200, 900, 250);
 					ML::Box2D  src(0, 0, 2172, 724);
@@ -529,49 +577,18 @@ namespace  Title
 					draw.Offset(0, 0);
 					this->res->randommode3->Draw(draw, src);
 				}
-			}
-			// はい画像
+			
+			//キャンセル画像
 			{
-				ML::Box2D draw;
+				ML::Box2D  draw (1180, 0, 100, 100);
+				ML::Box2D  src (0, 0, 1200, 1200);
 
-				if (mPos.x >= 370 && mPos.x <= 585 &&
-					mPos.y >= 465 && mPos.y <= 520)
-					// 大きくする
-				{
-					draw = ML::Box2D(285, 390, 380, 220);
-				}
-				else
-					// 通常サイズ
-				{
-					draw = ML::Box2D(300, 400, 350, 200);
-				}
-
-				ML::Box2D src(0, 0, 1536, 1024);
-				this->res->Yes->Draw(draw, src);
+				draw.Offset (0, 0);
+				this->res->kyanseru->Draw (draw, src);
 			}
-			// いいえ画像
-			{
-				ML::Box2D draw;
-
-				if (mPos.x >= 665 && mPos.x <= 890 &&
-					mPos.y >= 465 && mPos.y <= 520)
-					// 大きくする
-				{
-					draw = ML::Box2D(585, 390, 380, 220);
-				}
-				else
-					// 通常サイズ
-				{
-					draw = ML::Box2D(600, 400, 350, 200);
-				}
-
-				ML::Box2D src(0, 0, 1536, 1024);
-				this->res->No->Draw(draw, src);
-			}
-
 		}
-		//説明画面
-		if (state == TitleState::explanation) {
+		//説明画面1ページ
+		if (state == TitleState::explanation0) {
 			//緑背景
 			{
 				ML::Box2D  draw(0, 0, 1280, 780);
@@ -586,7 +603,7 @@ namespace  Title
 				ML::Box2D  src(0, 0, 1536, 1024);
 
 				draw.Offset(0, 0);
-				this->res->setumei->Draw(draw, src);
+				this->res->setumei0->Draw(draw, src);
 			}
 			// はい画像
 			{
@@ -626,8 +643,147 @@ namespace  Title
 				ML::Box2D src(0, 0, 1536, 1024);
 				this->res->No->Draw(draw, src);
 			}
+			//キャンセル画像
+			{
+				ML::Box2D  draw (1180, 0, 100, 100);
+				ML::Box2D  src (0, 0, 1200, 1200);
+
+				draw.Offset (0, 0);
+				this->res->kyanseru->Draw (draw, src);
+			}
 		}
 
+		//説明画面2ページ
+		if (state == TitleState::explanation1) {
+			//緑背景
+			{
+				ML::Box2D  draw(0, 0, 1280, 780);
+				ML::Box2D  src(0, 0, 1536, 1024);
+
+				draw.Offset(0, 0);
+				this->res->GB->Draw(draw, src);
+			}
+			//説明画面
+			{
+				ML::Box2D  draw(200, 0, 780, 560);
+				ML::Box2D  src(0, 0, 1536, 1024);
+
+				draw.Offset(0, 0);
+				this->res->setumei1->Draw(draw, src);
+			}
+			// はい画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 370 && mPos.x <= 600 &&
+					mPos.y >= 550 && mPos.y <= 615)
+					// 大きくする
+				{
+					draw = ML::Box2D(285, 480, 380, 220);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D(300, 490, 350, 200);
+				}
+
+				ML::Box2D src(0, 0, 1536, 1024);
+				this->res->Yes->Draw(draw, src);
+			}
+			// いいえ画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615)
+					// 大きくする
+				{
+					draw = ML::Box2D(585, 480, 380, 220);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D(600, 490, 350, 200);
+				}
+
+				ML::Box2D src(0, 0, 1536, 1024);
+				this->res->No->Draw(draw, src);
+			}
+			//キャンセル画像
+			{
+				ML::Box2D  draw(1180, 0, 100, 100);
+				ML::Box2D  src(0, 0, 1200, 1200);
+
+				draw.Offset(0, 0);
+				this->res->kyanseru->Draw(draw, src);
+			}
+		}
+
+		//説明画面3ページ
+		if (state == TitleState::explanation2) {
+			//緑背景
+			{
+				ML::Box2D  draw(0, 0, 1280, 780);
+				ML::Box2D  src(0, 0, 1536, 1024);
+
+				draw.Offset(0, 0);
+				this->res->GB->Draw(draw, src);
+			}
+			//説明画面
+			{
+				ML::Box2D  draw(200, 0, 780, 560);
+				ML::Box2D  src(0, 0, 1536, 1024);
+
+				draw.Offset(0, 0);
+				this->res->setumei2->Draw(draw, src);
+			}
+			// はい画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 370 && mPos.x <= 600 &&
+					mPos.y >= 550 && mPos.y <= 615)
+					// 大きくする
+				{
+					draw = ML::Box2D(285, 480, 380, 220);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D(300, 490, 350, 200);
+				}
+
+				ML::Box2D src(0, 0, 1536, 1024);
+				this->res->Yes->Draw(draw, src);
+			}
+			// いいえ画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615)
+					// 大きくする
+				{
+					draw = ML::Box2D(585, 480, 380, 220);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D(600, 490, 350, 200);
+				}
+
+				ML::Box2D src(0, 0, 1536, 1024);
+				this->res->No->Draw(draw, src);
+			}
+			//キャンセル画像
+			{
+				ML::Box2D  draw(1180, 0, 100, 100);
+				ML::Box2D  src(0, 0, 1200, 1200);
+
+				draw.Offset(0, 0);
+				this->res->kyanseru->Draw(draw, src);
+			}
+		}
 
 	}
 
