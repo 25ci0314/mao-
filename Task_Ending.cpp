@@ -21,7 +21,7 @@ namespace  Ending
 		this->imgBG = DG::Image::Create("./data/image/–‚‰¤éV’z01.png");
 		this->imgMaoju = DG::Image::Create("./data/image/–‚‰¤é03.png");
 		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
-		this->imgS = DG::Image::Create("./data/image/æŽè02.png");
+		this->imgSatu = DG::Image::Create("./data/image/ŽD‰J02.png");
 		this->imgK = DG::Image::Create("./data/image/ŒãŽè01.png");
 		this->imgE = DG::Image::Create("./data/image/Elogo.png");
 		this->imgAme = DG::Image::Create("./data/image/ame02.png");
@@ -52,7 +52,7 @@ namespace  Ending
 		this->imgBG.reset();
 		this->imgE.reset();
 		this->imgK.reset();
-		this->imgS.reset();
+		this->imgSatu.reset();
 		this->imgAme.reset();
 		this->imgUI.reset();
 		return true;
@@ -84,6 +84,7 @@ namespace  Ending
 		PosY = 610;
 		this->timecnt = 0;
 		this->logPX = 0;
+		this->Spy = 0;
 		this->Tcnt = 0;
 		this->ET = 0;
 
@@ -148,6 +149,10 @@ namespace  Ending
 			this->logPY = 1440;
 		}
 
+		if (Spy >= 720 * 3) {
+			this->Spy = 1440;
+		}
+
 		if (logPX <= -1280) {
 			this->logPX = 0;
 		}
@@ -155,6 +160,7 @@ namespace  Ending
 		if (Tcnt > 120) {
 			this->logPY = logPY + 10;
 			this->logPX = logPX - 2;
+			this->Spy = Spy + 10;
 		}
 		
 
@@ -195,6 +201,17 @@ namespace  Ending
 			}
 		}
 
+		//ŽD‰J
+		if (BChara::winner == 0) {
+			if (Tcnt > 120) {
+				for (int i = -3; i < 0; i++) {
+					ML::Box2D draw(0, Spy + 720 * i, 1280, 720);
+					ML::Box2D src(0, 0, 1920, 1080);
+					this->res->imgSatu->Draw(draw, src);
+				}
+			}
+		}
+
 		//—‹
 		if (BChara::winner == 1) {
 			if (Tcnt % 301 ==300 ) {
@@ -206,7 +223,7 @@ namespace  Ending
 			}
 		}
 
-			//ŽØ‹à•ÔÏƒƒS
+		//ŽØ‹à•ÔÏƒƒS
 		if (BChara::winner == 0)
 		{
 			if (Tcnt > 30) {
@@ -215,23 +232,6 @@ namespace  Ending
 				this->res->imgHensai->Draw(draw, src);
 			}
 		}
-		
-
-
-
-
-
-		/*if (Tcnt > 30) {
-			//æŽèŸ—˜ƒƒS
-			if (BChara::winner == 0)
-			{
-				ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
-				ML::Box2D src(0, 0, 868, 188);
-				this->res->imgS->Draw(draw, src);
-
-			}
-		}*/
-
 
 		if (Tcnt > 30) {
 			//ŒãŽèŸ—˜ƒƒS
