@@ -45,7 +45,7 @@ namespace  Game
 
 
 
-		this->timeLimit = 20 * 60; // 20秒
+		this->time =this->limit; // 3分
 
 
 
@@ -89,6 +89,9 @@ namespace  Game
 	void Object::UpDate()
 	{
 		auto inp = ge->in1->GetState();
+
+		this->time--;	//残り時間計測
+
 		if (inp.S1.down) {
 			BChara::winner = 1;
 			ge->StartCounter("test", 45); //フェードは90フレームなので半分の45で切り替え

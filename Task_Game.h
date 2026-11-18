@@ -51,8 +51,8 @@ namespace  Game
 
 
 
-
-		int timeLimit;     // 残り時間（フレーム）
+		const int limit = 60 * 60 * 3;		//制限時間（フレーム）
+		int time;	// 残り時間（フレーム）
 		bool gameEnd;      // ゲーム終了フラグ
 
 		bool cpuBattle;

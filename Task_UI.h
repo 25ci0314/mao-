@@ -38,7 +38,6 @@ namespace  UI
 		static  Object::SP  Create(bool flagGameEnginePushBack_);
 		Resource::SP	res;
 	private:
-
 		Object();
 		bool  B_Initialize();
 		bool  B_Finalize();
@@ -50,7 +49,9 @@ namespace  UI
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
-		const int limit = 60 * 60 * 3;
 		int time;
+		BChara::DrawInfo font_ward();
+		BChara::DrawInfo font_number(int num_);
+		void Timer_Render(int time_);
 	};
 }

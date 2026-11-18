@@ -59,6 +59,18 @@ namespace  UI
 	{
 	}
 
+	BChara::DrawInfo Object::font_number(int num_) {
+		ML::Color  defColor(1, 1, 1, 1);
+		int size = 2;
+		BChara::DrawInfo number[] = {
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(0,9 * 2,18,19),defColor}
+
+		};
+	}
+
+	void Timer_Render(int time_) {
+
+	}
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 	//以下は基本的に変更不要なメソッド
 	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
