@@ -280,54 +280,53 @@ namespace  Title
 
 		
 
-			//説明画面1ページ
-			if (state == TitleState::explanation0) {
+			switch (state)
+			{
+				// 説明画面1ページ
+			case TitleState::explanation0:
+
 				// はい
 				if (mPos.x >= 370 && mPos.x <= 600 &&
 					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::explanation1;//確認画面へ
+
+					state = TitleState::explanation1;
 					se::Play("se5");
-					
 				}
-				/* いいえ
-				if (mPos.x >= 670 && mPos.x <= 890 &&
-					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::Title;//タイトルに戻す
-					se::Play ("se5");
-				}*/
-				
-			}
-			//説明画面2ページ
-			if (state == TitleState::explanation1) {
+				break;
+
+
+				// 説明画面2ページ
+			case TitleState::explanation1:
+
 				// はい
 				if (mPos.x >= 370 && mPos.x <= 600 &&
 					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::explanation2;//確認画面へ
 
-				}
-				 //いいえ
-				if (mPos.x >= 670 && mPos.x <= 890 &&
-					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::explanation0;//タイトルに戻す
-					se::Play ("se5");
-				}
-
-			}
-			//説明画面3ページ
-			if (state == TitleState::explanation2) {
-				/* はい
-				if (mPos.x >= 370 && mPos.x <= 600 &&
-					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::explanation2;//確認画面へ
-
-				}*/
-				//いいえ
-				if (mPos.x >= 670 && mPos.x <= 890 &&
-					mPos.y >= 550 && mPos.y <= 615) {
-					state = TitleState::explanation1;//タイトルに戻す
+					state = TitleState::explanation2;
 					se::Play("se5");
 				}
 
+				// いいえ
+				else if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+
+					state = TitleState::explanation0;
+					se::Play("se5");
+				}
+				break;
+
+
+				// 説明画面3ページ
+			case TitleState::explanation2:
+
+				// いいえ
+				if (mPos.x >= 670 && mPos.x <= 890 &&
+					mPos.y >= 550 && mPos.y <= 615) {
+
+					state = TitleState::explanation1;
+					se::Play("se5");
+				}
+				break;
 			}
 
 
