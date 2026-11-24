@@ -105,9 +105,13 @@ namespace  Game
 		//残り時間渡し
 		auto ui = ge->GetTask<UI::Object>(UI::defGroupName, UI::defName);
 		ui->time = this->time / 60;
-
-		if (inp.S1.down) {
+		if (this->time == 0) {
 			BChara::winner = 1;
+			ge->StartCounter("test", 45); //フェードは90フレームなので半分の45で切り替え
+			ge->CreateEffect(98, ML::Vec2(0, 0));
+		}
+		if (inp.S1.down) {
+			BChara::winner = 0;
 			ge->StartCounter("test", 45); //フェードは90フレームなので半分の45で切り替え
 			ge->CreateEffect(98, ML::Vec2(0, 0));
 		}
