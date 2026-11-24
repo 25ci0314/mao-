@@ -26,6 +26,8 @@ namespace  Ending
 		this->imgE = DG::Image::Create("./data/image/spacekey.png");
 		this->imgAme = DG::Image::Create("./data/image/ame02.png");
 		this->imgHensai = DG::Image::Create("./data/image/返済ロゴ.png");
+		this->imgNZ = DG::Image::Create("./data/image/残り時間.png");
+		this->imgNH = DG::Image::Create("./data/image/残り返済額.png");
 		
 		//サウンドエフェクト
 		se::LoadFile("push", "./data/sound/se/将棋・駒を指す03改良版.wav");
@@ -55,6 +57,8 @@ namespace  Ending
 		this->imgSatu.reset();
 		this->imgAme.reset();
 		this->imgUI.reset();
+		this->imgNZ.reset();
+		this->imgNH.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -192,7 +196,7 @@ namespace  Ending
 			//借金返済ロゴ
 			{
 				if (Tcnt > 30) {
-					ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
+					ML::Box2D draw(this->lPosX, this->lPosY - 30, 868, 188);
 					ML::Box2D src(0, 0, 2023, 777);
 					this->res->imgHensai->Draw(draw, src);
 				}
@@ -241,6 +245,18 @@ namespace  Ending
 					this->res->imgRotou->Draw(draw, src);
 				}
 			}
+			//残り返済額
+			if (Tcnt > 75) {
+				ML::Box2D draw(1080 / 5, 720 / 2 + (724 / 8), 2172 / 8, 724 / 8);
+				ML::Box2D src(0, 0, 2172, 724);
+				this->res->imgNH->Draw(draw, src);
+			}
+		}
+
+		if (Tcnt > 75) {
+			ML::Box2D draw(1080 / 5, 720/2-30, 2172 / 8, 724 / 8);
+			ML::Box2D src(0, 0, 2172, 724);
+			this->res->imgNZ->Draw(draw, src);
 		}
 
 		if (Tcnt > 120) {
