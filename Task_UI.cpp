@@ -59,7 +59,7 @@ namespace  UI
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
-		this->Timer_Render(this->pos.x, this->pos.y, this->time);
+		this->Timer_Render(this->tPos.x, this->tPos.y, this->time);
 	}
 
 	BChara::DrawInfo Object::font_ward(int ward_)
