@@ -171,75 +171,75 @@ namespace  Ending
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
-		//•ÔÏ¬Œ÷”wŒi
+		//•ÔÏ¬Œ÷
 		if (BChara::winner == 0){
-			auto dbg = ML::Box2D(0, 0, 1280, 720);
-			auto sbg = ML::Box2D(0, 0, 1920, 1080);
-			this->res->imgBG->Draw(dbg, sbg);
-		}
-
-		//Ž¸”sŽž‚Ì”wŒi
-		if (BChara::winner == 1) {
-			ML::Box2D draw(0, 0, 1280, 720);
-			ML::Box2D src(0, 0, 1920, 1080);
-			this->res->imgMaoju->Draw(draw, src);
-		}
-
-		//‰J
-		if (BChara::winner == 1) {
-			if (Tcnt > 120) {
-				for (int j = -1; j < 2; j++) {
+			//”wŒi
+			{
+				auto dbg = ML::Box2D(0, 0, 1280, 720);
+				auto sbg = ML::Box2D(0, 0, 1920, 1080);
+				this->res->imgBG->Draw(dbg, sbg);
+			}
+			//ŽD‰J
+			{
+				if (Tcnt > 120) {
 					for (int i = -3; i < 0; i++) {
-						ML::Box2D draw(logPX + 1280 * j, logPY + 720 * i, 1280, 720);
+						ML::Box2D draw(0, Spy + 720 * i, 1280, 720);
 						ML::Box2D src(0, 0, 1920, 1080);
-						this->res->imgAme->Draw(draw, src);
+						this->res->imgSatu->Draw(draw, src);
 					}
 				}
 			}
-			if (Tcnt == 180) {
-				se::Play("ame");
-			}
-		}
-
-		//ŽD‰J
-		if (BChara::winner == 0) {
-			if (Tcnt > 120) {
-				for (int i = -3; i < 0; i++) {
-					ML::Box2D draw(0, Spy + 720 * i, 1280, 720);
-					ML::Box2D src(0, 0, 1920, 1080);
-					this->res->imgSatu->Draw(draw, src);
+			//ŽØ‹à•ÔÏƒƒS
+			{
+				if (Tcnt > 30) {
+					ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
+					ML::Box2D src(0, 0, 2023, 777);
+					this->res->imgHensai->Draw(draw, src);
 				}
 			}
 		}
 
-		//—‹
+		//Ž¸”sŽž
 		if (BChara::winner == 1) {
-			if (Tcnt % 301 ==300 ) {
-				ML::Vec2 pos;
-				pos.x = GetRandom((float)0.f, (float)ge->screen2DWidth);
-				pos.y = 0;
-				ge->CreateEffect(9, pos);
-				se::Play("kami");
-			}
-		}
-
-		//ŽØ‹à•ÔÏƒƒS
-		if (BChara::winner == 0)
-		{
-			if (Tcnt > 30) {
-				ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
-				ML::Box2D src(0, 0, 2023, 777);
-				this->res->imgHensai->Draw(draw, src);
-			}
-		}
-
-		if (Tcnt > 30) {
-			//˜H“ª‚É–À‚¤ƒƒS
-			if (BChara::winner == 1)
+			//”wŒi
 			{
-				ML::Box2D draw(this->lPosX + 50, 50, 2172 / 3, 724 / 3);
-				ML::Box2D src(0, 0, 2172, 724);
-				this->res->imgRotou->Draw(draw, src);
+				ML::Box2D draw(0, 0, 1280, 720);
+				ML::Box2D src(0, 0, 1920, 1080);
+				this->res->imgMaoju->Draw(draw, src);
+			}
+			//‰J
+			{
+				if (Tcnt > 120) {
+					for (int j = -1; j < 2; j++) {
+						for (int i = -3; i < 0; i++) {
+							ML::Box2D draw(logPX + 1280 * j, logPY + 720 * i, 1280, 720);
+							ML::Box2D src(0, 0, 1920, 1080);
+							this->res->imgAme->Draw(draw, src);
+						}
+					}
+				}
+				if (Tcnt == 180) {
+					se::Play("ame");
+				}
+
+			}
+			//—‹
+			{
+				if (Tcnt % 301 ==300 ) {
+					ML::Vec2 pos;
+					pos.x = GetRandom((float)0.f, (float)ge->screen2DWidth);
+					pos.y = 0;
+					ge->CreateEffect(9, pos);
+					se::Play("kami");
+				}
+			}
+			//˜H“ª‚É–À‚¤ƒƒS
+			{
+				if (Tcnt > 30) {
+					ML::Box2D draw(this->lPosX + 50, 50, 2172 / 3, 724 / 3);
+					ML::Box2D src(0, 0, 2172, 724);
+					this->res->imgRotou->Draw(draw, src);
+				}
 			}
 		}
 
