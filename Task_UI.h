@@ -50,8 +50,8 @@ namespace  UI
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
 		int time;
-		BChara::DrawInfo font_ward();
+		BChara::DrawInfo font_ward(int ward_);
 		BChara::DrawInfo font_number(int num_);
-		void Timer_Render(int time_);
+		void Timer_Render(int px_, int py_,int time_);
 	};
 }

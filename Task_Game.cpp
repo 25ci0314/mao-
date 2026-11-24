@@ -90,7 +90,9 @@ namespace  Game
 	{
 		auto inp = ge->in1->GetState();
 
-		this->time--;	//残り時間計測
+		//残り時間計測
+		this->time--;
+		//残り時間渡し
 
 		if (inp.S1.down) {
 			BChara::winner = 1;
