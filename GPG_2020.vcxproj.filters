@@ -109,9 +109,6 @@
     <ClCompile Include="Task_Ending.cpp">
       <Filter>MyPG\Task\ending</Filter>
     </ClCompile>
-    <ClCompile Include="BChara.cpp">
-      <Filter>MyPG\Task</Filter>
-    </ClCompile>
     <ClCompile Include="Task_Board.cpp">
       <Filter>MyPG\Task\Game</Filter>
     </ClCompile>
@@ -126,6 +123,9 @@
     </ClCompile>
     <ClCompile Include="Task_UI.cpp">
       <Filter>MyPG\Task\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="BChara.cpp">
+      <Filter>MyPG\Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

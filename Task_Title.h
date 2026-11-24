@@ -52,6 +52,15 @@ namespace  Title
 		DG::Image::SP	foot;//足
 		DG::Image::SP	horse;//馬
 		DG::Image::SP	doragon;//ドラゴン
+		DG::Image::SP	space;//スペースキー
+		DG::Image::SP	foottwo;//徒歩モードの二人対戦
+		DG::Image::SP	horsetwo;//馬モードの二人対戦
+		DG::Image::SP	doragontwo;//竜モードの二人対戦
+		DG::Image::SP	footCPU;//徒歩モードのCPU戦
+		DG::Image::SP	horseCPU;//馬モードのCPU戦
+		DG::Image::SP	doragonCPU;//竜モードのCPU戦
+		DG::Image::SP	pageback;//前のページへ
+		DG::Image::SP	pagemoveon;// 次のページへ
 		DG::Image::SP	GB;//緑背景画像
 		DG::Font::SP    fontA;//現在の状態を表示(通常モード)
 		DG::Font::SP    fontB;//現在の状態を表示(ランダムモード)
