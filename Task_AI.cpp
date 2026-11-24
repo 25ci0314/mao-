@@ -1,533 +1,772 @@
+//-----------------------------------------------------------------------------
+//勇者AI
+//マップ全体の巡回・BFS追跡・攻撃判断
+//-----------------------------------------------------------------------------
 #include "MyPG.h"
 #include "Task_AI.h"
 #include "Task_Board.h"
-#include "Task_Koma.h"
-#include "sound.h"
+#include "Task_Player.h"
 
 namespace AI
 {
-	//AIが選んだ駒の位置
-	int selectKomaX = -1;
-	int selectKomaY = -1;
-
-	//-------------------------------------------------------------------
-	//初期化
-	bool Object::Initialize()
-	{
-		//スーパークラス初期化
-		__super::Initialize(defGroupName, defName, true);
-
-		//思考時間を初期化
-		this->thinkCnt = 0;
-
-		//駒を指すSE
-		se::LoadFile("sasu", "./data/sound/se/将棋・駒を指す03改良版.wav");
-
-		return true;
-	}
-
-	//-------------------------------------------------------------------
-	//終了
-	bool Object::Finalize()
-	{
-		return true;
-	}
-
-	//-------------------------------------------------------------------
-	//更新
-	void Object::UpDate()
-	{
-		//将棋盤タスクを取得
-		auto board = ge->GetTask<Board::Object>(
-			Board::defGroupName,
-			Board::defName);
-
-		//将棋盤が存在しない
-		if (board == nullptr) {
-			return;
-		}
-
-		//後手の番ではない
-		if (board->turn != 1) {
-			this->thinkCnt = 0;
-			return;
-		}
-
-		//AIの思考時間を進める
-		this->thinkCnt++;
-
-		//60フレーム待つ
-		if (this->thinkCnt < 120) {
-			return;
-		}
-
-		//AIを動かす
-		this->Think();
-
-		//思考時間を戻す
-		this->thinkCnt = 0;
-	}
-
-	//-------------------------------------------------------------------
-	//AI思考
-	void Object::Think()
-	{
-		//将棋盤タスクを取得
-		auto board = ge->GetTask<Board::Object>(
-			Board::defGroupName,
-			Board::defName);
-
-		if (board == nullptr) {
-			return;
-		}
-
-		//後手の番ではない
-		if (board->turn != 1) {
-			return;
-		}
-
-		//---------------------------------------------------------------
-		//動かす駒を選ぶ
-		int komaPosition = this->SelectKoma();
-
-		//動かせる駒がない
-		if (komaPosition == -1) {
-			return;
-		}
-
-		//---------------------------------------------------------------
-		//NPCが持ち駒を使用する
-		//持ち駒を使用するかランダムに決定（50%）
-		if (rand() % 2 == 0) {
-
-			//持ち駒の候補
-			int handType[8];
-			int handCount = 0;
-
-			//後手の持ち駒を調べる
-			for (int i = 0; i < 8; i++) {
-
-				if (board->handKoma[1][i] > 0) {
-					handType[handCount] = i;
-					handCount++;
-				}
-			}
-
-			//持ち駒がある場合
-			if (handCount > 0) {
-
-				//使用する持ち駒をランダムに選択
-				int selectNo = rand() % handCount;
-				int typeNo = handType[selectNo];
-
-				auto type = board->NoToType(typeNo);
-
-				//空いているマスを調べる
-				int putX[81];
-				int putY[81];
-				int putCount = 0;
-
-				for (int y = 0; y < 9; y++) {
-					for (int x = 0; x < 9; x++) {
-
-						//駒があるマスには打てない
-						if (board->GetKoma(x, y) != nullptr) {
-							continue;
-						}
-
-						putX[putCount] = x;
-						putY[putCount] = y;
-						putCount++;
-					}
-				}
-
-				//空いているマスがある場合
-				if (putCount > 0) {
-
-					int putNo = rand() % putCount;
-
-					int x = putX[putNo];
-					int y = putY[putNo];
-
-
-
-					//盤上に持ち駒を配置
-					board->PutHandKoma(x, y, type, Koma::Object::Owner::Gote);
-
-					return;
-
-
-
-				}
-			}
-		}
-		//動かせる駒がない
-		if (komaPosition == -1) {
-			return;
-		}
-
-		//---------------------------------------------------------------
-		//移動先を選ぶ
-		int movePosition = this->SelectMove();
-
-		//移動先がない
-		if (movePosition == -1) {
-			return;
-		}
-
-		//移動先
-		int moveX = movePosition % 9;
-		int moveY = movePosition / 9;
-
-		//選択した駒を取得
-		auto koma = board->GetKoma(
-			selectKomaX,
-			selectKomaY);
-
-		if (koma == nullptr) {
-			return;
-		}
-
-		//後手の駒ではない
-		if (koma->owner != Koma::Object::Owner::Gote) {
-			return;
-		}
-
-		//---------------------------------------------------------------
-		//移動先の駒を取得
-		auto targetKoma = board->GetKoma(
-			moveX,
-			moveY);
-
-		//相手の駒がいる場合
-		if (targetKoma != nullptr) {
-
-			if (targetKoma->owner != koma->owner) {
-
-				//取った駒を持ち駒へ追加
-				board->AddHand(
-					targetKoma->type,
-					koma->owner);
-
-				//相手の駒を消す
-				targetKoma->Kill();
-			}
-		}
-
-		//---------------------------------------------------------------
-		//移動前のマスを空にする
-		board->ClearKoma(
-			koma->boardX,
-			koma->boardY);
-
-		//移動先を空にする
-		board->ClearKoma(
-			moveX,
-			moveY);
-
-		//---------------------------------------------------------------
-		//駒の位置を変更
-		koma->SetBoardPosition(
-			moveX,
-			moveY);
-
-		//移動先も現在位置に合わせる
-		koma->SetTargetPosition(
-			moveX,
-			moveY);
-
-		//盤面に駒を登録
-		board->SetKoma(
-			moveX,
-			moveY,
-			koma);
-
-		//---------------------------------------------------------------
-		//成り判定
-		if (koma->CheckNari() == true) {
-			koma->nari = true;
-		}
-
-		//移動可能マスを消す
-		koma->ClearMovePossible();
-
-		//待機状態に戻す
-		koma->motion = BChara::Motion::Stand;
-		koma->moveCnt = 0;
-		koma->animCnt = 0;
-
-		//---------------------------------------------------------------
-		//手番交代
-		board->ChangeTurn();
-	}
-	//-------------------------------------------------------------------
-	//移動先を選ぶ
-	int Object::SelectMove()
-	{
-		//将棋盤タスクを取得
-		auto board = ge->GetTask<Board::Object>(
-			Board::defGroupName,
-			Board::defName);
-
-		if (board == nullptr) {
-			return -1;
-		}
-
-		//選択した駒を取得
-		auto koma = board->GetKoma(
-			selectKomaX,
-			selectKomaY);
-
-		if (koma == nullptr) {
-			return -1;
-		}
-
-		//後手の駒ではない
-		if (koma->owner != Koma::Object::Owner::Gote) {
-			return -1;
-		}
-
-		//移動可能マスを設定
-		koma->SetMovePossible();
-
-		//通常の移動先候補
-		int moveX[81];
-		int moveY[81];
-		int moveCount = 0;
-
-		//相手の駒を取れる移動先候補
-		int attackX[81];
-		int attackY[81];
-		int attackCount = 0;
-
-		//---------------------------------------------------------------
-		//移動可能マスを調べる
-		for (int y = 0; y < 9; y++) {
-			for (int x = 0; x < 9; x++) {
-
-				//移動できないマス
-				if (koma->movePossible[y][x] != 1) {
-					continue;
-				}
-
-				//通常の移動先候補に追加
-				moveX[moveCount] = x;
-				moveY[moveCount] = y;
-				moveCount++;
-
-				//-------------------------------------------------------
-				//移動先に相手の駒がいるか調べる
-				auto targetKoma = board->GetKoma(x, y);
-
-				if (targetKoma != nullptr) {
-
-					if (targetKoma->owner ==
-						Koma::Object::Owner::Sente) {
-
-						//取れるマスを候補に追加
-						attackX[attackCount] = x;
-						attackY[attackCount] = y;
-						attackCount++;
-					}
-				}
-			}
-		}
-
-		//---------------------------------------------------------------
-		//相手の駒を取れる場合
-		if (attackCount > 0) {
-
-			//取れるマスからランダムに選択
-			int selectNo = rand() % attackCount;
-
-			int targetX = attackX[selectNo];
-			int targetY = attackY[selectNo];
-
-			return targetY * 9 + targetX;
-		}
-
-		//---------------------------------------------------------------
-		//取れる駒がない場合
-		if (moveCount == 0) {
-			return -1;
-		}
-
-		//通常の移動先からランダムに選択
-		int selectNo = rand() % moveCount;
-
-		int targetX = moveX[selectNo];
-		int targetY = moveY[selectNo];
-
-		return targetY * 9 + targetX;
-	}
-	//-------------------------------------------------------------------
-	//動かす駒を選ぶ
-	//-------------------------------------------------------------------
-	int Object::SelectKoma()
-	{
-		//将棋盤タスクを取得
-		auto board = ge->GetTask<Board::Object>(
-			Board::defGroupName,
-			Board::defName);
-
-		if (board == nullptr) {
-			return -1;
-		}
-
-		//動かせる駒の座標
-		int komaX[81];
-		int komaY[81];
-		int komaCount = 0;
-
-		//相手の駒を取れる駒の座標
-		int attackX[81];
-		int attackY[81];
-		int attackCount = 0;
-
-		//---------------------------------------------------------------
-		//盤上の後手の駒を調べる
-		for (int y = 0; y < 9; y++) {
-			for (int x = 0; x < 9; x++) {
-
-				auto koma = board->GetKoma(x, y);
-
-				//駒がない
-				if (koma == nullptr) {
-					continue;
-				}
-
-				//後手の駒ではない
-				if (koma->owner != Koma::Object::Owner::Gote) {
-					continue;
-				}
-
-				//移動可能マスを設定
-				koma->SetMovePossible();
-
-				bool canMove = false;
-				bool canAttack = false;
-
-				//-------------------------------------------------------
-				//移動できるマスを調べる
-				for (int moveY = 0; moveY < 9; moveY++) {
-					for (int moveX = 0; moveX < 9; moveX++) {
-
-						//移動できない
-						if (koma->movePossible[moveY][moveX] != 1) {
-							continue;
-						}
-
-						canMove = true;
-
-						//移動先の駒を取得
-						auto targetKoma = board->GetKoma(
-							moveX,
-							moveY);
-
-						//相手の駒がいる
-						if (targetKoma != nullptr) {
-
-							if (targetKoma->owner ==
-								Koma::Object::Owner::Sente) {
-
-								canAttack = true;
-							}
-						}
-					}
-				}
-
-				//動けない駒は候補に入れない
-				if (canMove == false) {
-					continue;
-				}
-
-				//通常の移動候補に追加
-				komaX[komaCount] = x;
-				komaY[komaCount] = y;
-				komaCount++;
-
-				//相手の駒を取れる場合
-				if (canAttack == true) {
-
-					attackX[attackCount] = x;
-					attackY[attackCount] = y;
-					attackCount++;
-				}
-			}
-		}
-
-		//---------------------------------------------------------------
-		//相手の駒を取れる場合は優先する
-		if (attackCount > 0) {
-
-			int selectNo = rand() % attackCount;
-
-			selectKomaX = attackX[selectNo];
-			selectKomaY = attackY[selectNo];
-			se::Play("sasu");
-			return selectKomaY * 9 + selectKomaX;
-		}
-
-		//---------------------------------------------------------------
-		//取れる駒がない場合はランダムに選ぶ
-		if (komaCount == 0) {
-			return -1;
-		}
-
-		int selectNo = rand() % komaCount;
-
-		selectKomaX = komaX[selectNo];
-		selectKomaY = komaY[selectNo];
-		se::Play("sasu");
-		return selectKomaY * 9 + selectKomaX;
-	}
-	//-------------------------------------------------------------------
-	//タスク生成
-	Object::SP Object::Create(bool flagGameEnginePushBack_)
-	{
-		Object::SP ob = Object::SP(new Object());
-
-		if (ob) {
-			ob->me = ob;
-
-			if (flagGameEnginePushBack_) {
-				ge->PushBack(ob);
-			}
-
-			if (!ob->B_Initialize()) {
-				ob->Kill();
-			}
-
-			return ob;
-		}
-
-		return nullptr;
-	}
-
-	//-------------------------------------------------------------------
-	//初期化窓口
-	bool Object::B_Initialize()
-	{
-		return this->Initialize();
-	}
-
-	//-------------------------------------------------------------------
-	//終了窓口
-	bool Object::B_Finalize()
-	{
-		return this->Finalize();
-	}
-
-	//-------------------------------------------------------------------
-	//コンストラクタ
-	Object::Object()
-	{
-	}
-
-	//-------------------------------------------------------------------
-	//デストラクタ
-	Object::~Object()
-	{
-		this->B_Finalize();
-	}
+    //-------------------------------------------------------------------------
+    //初期化
+    //-------------------------------------------------------------------------
+    bool Object::Initialize()
+    {
+        BTask::Initialize("本編", "勇者AI", true);
+
+        //勇者を取得
+        this->enemy = ge->GetTask<Enemy::Object>(
+            Enemy::defGroupName,
+            Enemy::defName
+        );
+
+        //魔王の初期位置
+        this->playerX = 0;
+        this->playerY = 0;
+
+        //追跡状態
+        this->chasing = false;
+
+        //AIカウンター
+        this->aiCnt = 0;
+
+        //探索位置
+        this->startX = 0;
+        this->startY = 0;
+
+        //目標位置
+        this->goalX = 0;
+        this->goalY = 0;
+
+        //次の移動先
+        this->nextX = 0;
+        this->nextY = 0;
+
+        //巡回先
+        this->patrolX = 0;
+        this->patrolY = 0;
+
+        this->patrolTarget = false;
+
+        //訪問回数を初期化
+        for (int y = 0; y < 15; y++)
+        {
+            for (int x = 0; x < 38; x++)
+            {
+                this->visitCount[y][x] = 0;
+            }
+        }
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------------
+    //終了処理
+    //-------------------------------------------------------------------------
+    bool Object::Finalize()
+    {
+        this->enemy.reset();
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------------
+    //魔王の位置を設定
+    //-------------------------------------------------------------------------
+    void Object::SetPlayerPosition(int x, int y)
+    {
+        this->playerX = x;
+        this->playerY = y;
+    }
+
+    //-------------------------------------------------------------------------
+    //通行可能か判定
+    //-------------------------------------------------------------------------
+    bool Object::CheckMove(int x, int y)
+    {
+        //マップ外
+        if (x < 0 || x >= 38)
+        {
+            return false;
+        }
+
+        if (y < 0 || y >= 15)
+        {
+            return false;
+        }
+
+        //マップ取得
+        Board::Object::SP board =
+            ge->GetTask<Board::Object>(
+                Board::defGroupName,
+                Board::defName
+            );
+
+        if (board == nullptr)
+        {
+            return false;
+        }
+
+        //壁なら通れない
+        if (board->IsWall(x, y) == true)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------------
+    //BFSで最短経路を探索
+    //-------------------------------------------------------------------------
+    bool Object::SearchRoute()
+    {
+        if (this->enemy == nullptr)
+        {
+            return false;
+        }
+
+        //距離を初期化
+        for (int y = 0; y < 15; y++)
+        {
+            for (int x = 0; x < 38; x++)
+            {
+                this->distance[y][x] = -1;
+            }
+        }
+
+        //勇者の現在位置
+        this->startX = this->enemy->mapX;
+        this->startY = this->enemy->mapY;
+
+        //開始位置を確認
+        if (this->CheckMove(this->startX, this->startY) == false)
+        {
+            return false;
+        }
+
+        //目標位置を確認
+        if (this->CheckMove(this->goalX, this->goalY) == false)
+        {
+            return false;
+        }
+
+        //同じマスの場合
+        if (this->startX == this->goalX &&
+            this->startY == this->goalY)
+        {
+            return false;
+        }
+
+        int head = 0;
+        int tail = 0;
+
+        //開始位置を登録
+        this->queueX[tail] = this->startX;
+        this->queueY[tail] = this->startY;
+
+        tail++;
+
+        this->distance[this->startY][this->startX] = 0;
+
+        //上下左右
+        int dx[4] = { 0, -1, 1, 0 };
+        int dy[4] = { 1, 0, 0, -1 };
+
+        //BFS探索
+        while (head < tail)
+        {
+            int x = this->queueX[head];
+            int y = this->queueY[head];
+
+            head++;
+
+            //目標に到着
+            if (x == this->goalX &&
+                y == this->goalY)
+            {
+                break;
+            }
+
+            //4方向を探索
+            for (int i = 0; i < 4; i++)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (this->CheckMove(nx, ny) == false)
+                {
+                    continue;
+                }
+
+                //探索済み
+                if (this->distance[ny][nx] != -1)
+                {
+                    continue;
+                }
+
+                //距離を記録
+                this->distance[ny][nx] =
+                    this->distance[y][x] + 1;
+
+                //キューに追加
+                if (tail < 570)
+                {
+                    this->queueX[tail] = nx;
+                    this->queueY[tail] = ny;
+
+                    tail++;
+                }
+            }
+        }
+
+        //経路が見つからない場合
+        if (this->distance[this->goalY][this->goalX] == -1)
+        {
+            return false;
+        }
+
+        //目標から逆にたどる
+        int x = this->goalX;
+        int y = this->goalY;
+
+        while (this->distance[y][x] > 1)
+        {
+            bool found = false;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (this->CheckMove(nx, ny) == false)
+                {
+                    continue;
+                }
+
+                if (this->distance[ny][nx] ==
+                    this->distance[y][x] - 1)
+                {
+                    x = nx;
+                    y = ny;
+
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found == false)
+            {
+                return false;
+            }
+        }
+
+        //次の移動先
+        this->nextX = x;
+        this->nextY = y;
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------------
+    //巡回先を決定
+    //訪問回数が少ないマスを優先する
+    //-------------------------------------------------------------------------
+    void Object::SetPatrolTarget()
+    {
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        //現在位置
+        int nowX = this->enemy->mapX;
+        int nowY = this->enemy->mapY;
+
+        //現在位置から各マスへの距離をBFSで調べる
+        for (int y = 0; y < 15; y++)
+        {
+            for (int x = 0; x < 38; x++)
+            {
+                this->distance[y][x] = -1;
+            }
+        }
+
+        if (this->CheckMove(nowX, nowY) == false)
+        {
+            return;
+        }
+
+        int head = 0;
+        int tail = 0;
+
+        this->queueX[tail] = nowX;
+        this->queueY[tail] = nowY;
+        tail++;
+
+        this->distance[nowY][nowX] = 0;
+
+        int dx[4] = { 0, -1, 1, 0 };
+        int dy[4] = { 1, 0, 0, -1 };
+
+        while (head < tail)
+        {
+            int x = this->queueX[head];
+            int y = this->queueY[head];
+
+            head++;
+
+            for (int i = 0; i < 4; i++)
+            {
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+
+                if (this->CheckMove(nx, ny) == false)
+                {
+                    continue;
+                }
+
+                if (this->distance[ny][nx] != -1)
+                {
+                    continue;
+                }
+
+                this->distance[ny][nx] =
+                    this->distance[y][x] + 1;
+
+                if (tail < 570)
+                {
+                    this->queueX[tail] = nx;
+                    this->queueY[tail] = ny;
+                    tail++;
+                }
+            }
+        }
+
+        //-------------------------------------------------------------
+        //訪問回数が少なく、遠くにあるマスを選ぶ
+        //-------------------------------------------------------------
+        int bestCount = 1000000;
+        int bestDistance = -1;
+
+        int bestX = nowX;
+        int bestY = nowY;
+
+        bool found = false;
+
+        for (int y = 0; y < 15; y++)
+        {
+            for (int x = 0; x < 38; x++)
+            {
+                //到達できないマスは除外
+                if (this->distance[y][x] == -1)
+                {
+                    continue;
+                }
+
+                //現在位置は除外
+                if (x == nowX && y == nowY)
+                {
+                    continue;
+                }
+
+                int count = this->visitCount[y][x];
+                int dist = this->distance[y][x];
+
+                //訪問回数が少ないマスを優先
+                if (count < bestCount)
+                {
+                    bestCount = count;
+                    bestDistance = dist;
+
+                    bestX = x;
+                    bestY = y;
+
+                    found = true;
+                }
+                //訪問回数が同じなら遠いマス
+                else if (count == bestCount &&
+                    dist > bestDistance)
+                {
+                    bestDistance = dist;
+
+                    bestX = x;
+                    bestY = y;
+
+                    found = true;
+                }
+            }
+        }
+
+        //巡回先を設定
+        if (found == true)
+        {
+            this->patrolX = bestX;
+            this->patrolY = bestY;
+
+            this->patrolTarget = true;
+        }
+        else
+        {
+            this->patrolTarget = false;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //勇者の移動方向を設定
+    //-------------------------------------------------------------------------
+    void Object::SetNextMove(int x, int y)
+    {
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        //移動中は変更しない
+        if (this->enemy->moving == true)
+        {
+            return;
+        }
+
+        //移動できない状態
+        if (this->enemy->CanMove() == false)
+        {
+            return;
+        }
+
+        //現在位置
+        int nowX = this->enemy->mapX;
+        int nowY = this->enemy->mapY;
+
+        //移動方向
+        int dx = x - nowX;
+        int dy = y - nowY;
+
+        //上下左右の1マスだけ
+        if (dx == 1 || dx == -1)
+        {
+            if (dy != 0)
+            {
+                return;
+            }
+        }
+        else if (dy == 1 || dy == -1)
+        {
+            if (dx != 0)
+            {
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        //BCharaの移動処理
+        this->enemy->SetMoveDirection(dx, dy);
+    }
+
+    //-------------------------------------------------------------------------
+    //巡回処理
+    //-------------------------------------------------------------------------
+    void Object::Patrol()
+    {
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        if (this->enemy->moving == true)
+        {
+            return;
+        }
+
+        //現在位置
+        int x = this->enemy->mapX;
+        int y = this->enemy->mapY;
+
+        //現在のマスの訪問回数を増やす
+        this->visitCount[y][x]++;
+
+        //巡回先に到着した場合
+        if (this->patrolTarget == true)
+        {
+            if (x == this->patrolX &&
+                y == this->patrolY)
+            {
+                this->patrolTarget = false;
+            }
+        }
+
+        //巡回先がない場合は決める
+        if (this->patrolTarget == false)
+        {
+            this->SetPatrolTarget();
+        }
+
+        if (this->patrolTarget == false)
+        {
+            return;
+        }
+
+        //巡回先をBFSの目標にする
+        this->goalX = this->patrolX;
+        this->goalY = this->patrolY;
+
+        //最短経路で巡回先へ進む
+        if (this->SearchRoute() == true)
+        {
+            this->SetNextMove(
+                this->nextX,
+                this->nextY
+            );
+        }
+        else
+        {
+            //経路が見つからなければ別の場所を選ぶ
+            this->patrolTarget = false;
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //魔王を追跡
+    //-------------------------------------------------------------------------
+    void Object::Chase()
+    {
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        if (this->enemy->moving == true)
+        {
+            return;
+        }
+
+        //魔王の位置を目標にする
+        this->goalX = this->playerX;
+        this->goalY = this->playerY;
+
+        //BFS探索
+        if (this->SearchRoute() == true)
+        {
+            this->SetNextMove(
+                this->nextX,
+                this->nextY
+            );
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //攻撃判断
+    //-------------------------------------------------------------------------
+    void Object::CheckAttack()
+    {
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        if (this->enemy->IsAttackReady() == false)
+        {
+            return;
+        }
+
+        int dx = this->playerX - this->enemy->mapX;
+        int dy = this->playerY - this->enemy->mapY;
+
+        //下
+        if (dx == 0 && dy == 1)
+        {
+            this->enemy->direction = BChara::Direction::Down;
+            this->enemy->StartEnemyAttack();
+        }
+        //上
+        else if (dx == 0 && dy == -1)
+        {
+            this->enemy->direction = BChara::Direction::Up;
+            this->enemy->StartEnemyAttack();
+        }
+        //左
+        else if (dx == -1 && dy == 0)
+        {
+            this->enemy->direction = BChara::Direction::Left;
+            this->enemy->StartEnemyAttack();
+        }
+        //右
+        else if (dx == 1 && dy == 0)
+        {
+            this->enemy->direction = BChara::Direction::Right;
+            this->enemy->StartEnemyAttack();
+        }
+    }
+
+    //-------------------------------------------------------------------------
+    //毎フレーム更新
+    //-------------------------------------------------------------------------
+    void Object::UpDate()
+    {
+        //勇者を取得
+        if (this->enemy == nullptr)
+        {
+            this->enemy = ge->GetTask<Enemy::Object>(
+                Enemy::defGroupName,
+                Enemy::defName
+            );
+        }
+
+        if (this->enemy == nullptr)
+        {
+            return;
+        }
+
+        //AI操作が無効なら停止
+        if (this->enemy->aiControl == false)
+        {
+            return;
+        }
+
+        //-------------------------------------------------------------
+        //魔王の位置を取得
+        //-------------------------------------------------------------
+        Player::Object::SP player =
+            ge->GetTask<Player::Object>(
+                Player::defGroupName,
+                Player::defName
+            );
+
+        if (player == nullptr)
+        {
+            return;
+        }
+
+        this->SetPlayerPosition(
+            player->mapX,
+            player->mapY
+        );
+
+        //-------------------------------------------------------------
+        //攻撃判断
+        //-------------------------------------------------------------
+        this->CheckAttack();
+
+        //攻撃中・硬直中は移動しない
+        if (this->enemy->CanMove() == false)
+        {
+            return;
+        }
+
+        //移動中は次の指示を出さない
+        if (this->enemy->moving == true)
+        {
+            return;
+        }
+
+        //-------------------------------------------------------------
+        //魔王との距離
+        //-------------------------------------------------------------
+        int dx = this->playerX - this->enemy->mapX;
+        int dy = this->playerY - this->enemy->mapY;
+
+        if (dx < 0)
+        {
+            dx = -dx;
+        }
+
+        if (dy < 0)
+        {
+            dy = -dy;
+        }
+
+        int dist = dx + dy;
+
+        //-------------------------------------------------------------
+        //6マス以内なら追跡
+        //-------------------------------------------------------------
+        if (dist <= 6)
+        {
+            this->chasing = true;
+
+            //巡回先を解除
+            this->patrolTarget = false;
+        }
+        else
+        {
+            this->chasing = false;
+        }
+
+        //-------------------------------------------------------------
+        //行動を決定
+        //-------------------------------------------------------------
+        if (this->chasing == true)
+        {
+            this->Chase();
+        }
+        else
+        {
+            this->Patrol();
+        }
+
+        this->aiCnt++;
+    }
+
+    //-------------------------------------------------------------------------
+    //タスク生成
+    //-------------------------------------------------------------------------
+    Object::SP Object::Create(bool flagGameEnginePushBack_)
+    {
+        Object::SP ob = Object::SP(new Object());
+
+        if (ob)
+        {
+            ob->me = ob;
+
+            if (flagGameEnginePushBack_)
+            {
+                ge->PushBack(ob);
+            }
+
+            if (!ob->B_Initialize())
+            {
+                ob->Kill();
+            }
+
+            return ob;
+        }
+
+        return nullptr;
+    }
+
+    //-------------------------------------------------------------------------
+    //初期化呼び出し
+    //-------------------------------------------------------------------------
+    bool Object::B_Initialize()
+    {
+        return this->Initialize();
+    }
+
+    //-------------------------------------------------------------------------
+    //デストラクタ
+    //-------------------------------------------------------------------------
+    Object::~Object()
+    {
+        this->B_Finalize();
+    }
+
+    //-------------------------------------------------------------------------
+    //終了処理呼び出し
+    //-------------------------------------------------------------------------
+    bool Object::B_Finalize()
+    {
+        return this->Finalize();
+    }
+
+    //-------------------------------------------------------------------------
+    //コンストラクタ
+    //-------------------------------------------------------------------------
+    Object::Object()
+    {
+    }
 }

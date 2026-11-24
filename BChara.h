@@ -1,111 +1,169 @@
-#pragma once
 #pragma warning(disable:4996)
+#pragma once
 
 //-----------------------------------------------------------------------------
-//キャラクタ汎用スーパークラス
+// キャラクター汎用スーパークラス
+// 魔王・勇者で共通する処理を管理する
 //-----------------------------------------------------------------------------
+
 #include "GameEngine_Ver3_83.h"
+#include <cmath>
 
 class BChara : public BTask
 {
-	//変更不可◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆◆
 public:
-	typedef shared_ptr<BChara>		SP;
-	typedef weak_ptr<BChara>		WP;
-public:
-	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
-	//キャラクタ共通メンバ変数
+    //-------------------------------------------------------------------------
+    // 勝者を管理する変数
+    //-------------------------------------------------------------------------
 
+    // -1：勝者なし
+    //  0：プレイヤー1
+    //  1：プレイヤー2
+    static int winner;
+    //-------------------------------------------------------------------------
+    // キャラクターの向き
+    //-------------------------------------------------------------------------
+    enum class Direction
+    {
+        Down,       // 下
+        Left,       // 左
+        Right,      // 右
+        Up          // 上
+    };
 
-	static int winner;
-	//勝者
-	//-1：未決定
-	// 0：先手
-	// 1：後手
+    //-------------------------------------------------------------------------
+    // キャラクターの行動状態
+    //-------------------------------------------------------------------------
+    enum class ActionState
+    {
+        Move,       // 通常移動
+        Attack,     // 攻撃中
+        Recovery,   // 攻撃後の硬直
+        CoolTime    // クールタイム
+    };
+    struct DrawInfo
+    {
+        ML::Box2D draw;
+        ML::Box2D src;
+        ML::Color color;
+    };
+    //-------------------------------------------------------------------------
+    // コンストラクタ・デストラクタ
+    //-------------------------------------------------------------------------
+    BChara();
+    virtual ~BChara();
 
-	enum class Motion
-	{
-		Unnon = -1,	//無効
-		Stand,		//盤上で待機
-		Select,		//選択中
-		Move,		//移動中
-		Captured	//持ち駒
-	};
+    //-------------------------------------------------------------------------
+    // 位置情報
+    //-------------------------------------------------------------------------
 
-	struct DrawInfo
-	{
-		ML::Box2D draw;
-		ML::Box2D src;
-		ML::Color color;
-	};
+    // 画面座標（既存コードとの互換性用）
+    ML::Vec2 pos;
 
-	//駒の画面座標
-	ML::Vec2 pos;
+    // 現在のピクセル座標
+    float posX;
+    float posY;
 
-	//移動先までの移動量
-	ML::Vec2 moveVec;
+    // 現在のマス
+    int mapX;
+    int mapY;
 
-	//盤上の位置
-	int boardX;
-	int boardY;
+    // 移動先のマス
+    int targetX;
+    int targetY;
 
-	//移動先の位置
-	int targetBoardX;
-	int targetBoardY;
+    // 移動中かどうか
+    bool moving;
 
-	//行動状態
-	Motion motion;
+    //-------------------------------------------------------------------------
+    // 移動情報
+    //-------------------------------------------------------------------------
 
+    // 移動速度
+    float moveSpeed;
 
-	//カウンタ
-	int moveCnt;
-	int animCnt;
+    // キャラクターの向き
+    Direction direction;
 
-	//移動できるマス
-	int			movePossible[9][9];
+    //-------------------------------------------------------------------------
+    // 行動状態
+    //-------------------------------------------------------------------------
 
-	//メンバ変数に最低限の初期化を行う
-	//★★メンバ変数を追加したら必ず初期化も追加する事★★
-	BChara()
-		: pos(0, 0)
-		, moveVec(0, 0)
-		, boardX(0)
-		, boardY(0)
-		, targetBoardX(0)
-		, targetBoardY(0)
-		, motion(Motion::Stand)
-		, moveCnt(0)
-		, animCnt(0)
-		, movePossible{
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0},
-			{0,0,0,0,0,0,0,0,0}
-		}
-	{
-	}
-	virtual  ~BChara() {}
+    ActionState actionState;
 
-	//モーションを更新
-	bool UpdateMotion(Motion nm_);
+    // 現在の状態の残り時間
+    int actionTimer;
 
-	//移動可能マスを初期化
-	void ClearMovePossible();
+    // 攻撃時間
+    int attackTime;
 
-	//盤面の範囲外か判定
-	bool CheckBoardOut(int boardX_, int boardY_);
+    // 攻撃後の硬直時間
+    int recoveryTime;
 
-	//盤上座標を画面座標に変換
-	ML::Vec2 BoardToScreen(int boardX_, int boardY_);
+    // クールタイム
+    int coolTime;
 
-	//盤上の位置を設定
-	void SetBoardPosition(int boardX_, int boardY_);
+    //-------------------------------------------------------------------------
+    // アニメーション
+    //-------------------------------------------------------------------------
 
-	//移動先の位置を設定
-	void SetTargetPosition(int boardX_, int boardY_);
+    // モーションの種類
+    enum class Motion
+    {
+        Idle,       // 待機
+        Walk,       // 移動
+        Attack      // 攻撃
+    };
+
+    Motion motion;
+
+    // 移動・アニメーションカウンター
+    int moveCnt;
+    int animCnt;
+
+    //-------------------------------------------------------------------------
+    // 共通処理
+    //-------------------------------------------------------------------------
+
+    // モーション変更
+    bool UpdateMotion(Motion nm_);
+
+    // キャラクターの位置設定
+    void SetPosition(int x, int y);
+
+    // 移動方向設定
+    void SetMoveDirection(int dx, int dy);
+
+    // 移動処理
+    void Move();
+
+    // 壁判定
+    bool CheckWall(int x, int y);
+
+    // 行動状態変更
+    void ChangeActionState(ActionState nextState, int time);
+
+    // 行動状態更新
+    void UpdateActionState();
+
+    // 攻撃開始
+    void StartAttack(int time);
+
+    // 攻撃後の硬直
+    void StartRecovery();
+
+    // クールタイム開始
+    void StartCoolTime();
+
+    // 移動可能か
+    bool CanMove() const;
+
+    // 攻撃可能か
+    bool CanAttack() const;
+
+    // 接触判定
+    bool CheckCollision(float x, float y, float size);
+
+    // 移動速度変更
+    void SetMoveSpeed(float speed);
 };

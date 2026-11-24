@@ -10,7 +10,8 @@
 #include "Task_Player.h"
 #include "BChara.h"
 #include "Task_UI.h"
-
+#include "Task_Enemy.h"
+#include "Task_AI.h"
 
 namespace  Game
 {
@@ -55,6 +56,12 @@ namespace  Game
 
 		//魔王プレイヤー生成
 		auto player = Player::Object::Create(true);
+
+		//勇者生成
+		auto Enemy = Enemy::Object::Create(true);
+
+		//勇者AI生成
+		auto AI = AI::Object::Create(true);
 
 		//ゲーム終了フラグ
 		this->gameEnd = false;

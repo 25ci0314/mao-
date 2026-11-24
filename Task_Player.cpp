@@ -36,11 +36,11 @@ namespace Player
         this->res = Resource::Create();
 
         //‰ŠúˆÊ’u
-        this->mapX = 1;
-        this->mapY = 1;
+        this->mapX = 3;
+        this->mapY = 2;
 
-        this->posX = 100 + mapX * 32;
-        this->posY = 50 + mapY * 32;
+        this->posX = 32 + mapX * 32;
+        this->posY = 144 + mapY * 32;
 
         this->targetX = mapX;
         this->targetY = mapY;
