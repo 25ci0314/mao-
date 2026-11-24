@@ -61,7 +61,7 @@ namespace  UI
 
 		//”š•ÏŠ·
 		BChara::DrawInfo font_number(int num_);
-
+		int h, t, w;
 		//c‚èŠÔ•`‰æ
 		void Timer_Render(int px_, int py_,int time_);
 	};
