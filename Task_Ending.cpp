@@ -225,7 +225,7 @@ namespace  Ending
 			}
 			//—‹
 			{
-				if (Tcnt % 301 ==300 ) {
+				if (Tcnt % 211 ==210 ) {
 					ML::Vec2 pos;
 					pos.x = GetRandom((float)0.f, (float)ge->screen2DWidth);
 					pos.y = 0;
