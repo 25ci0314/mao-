@@ -82,6 +82,8 @@ namespace  Game
 	{
 		//★データ＆タスク解放
 		ge->KillAll_G("本編");
+		ge->KillAll_G("UI");
+
 
 		bgm::Stop("normal_bgm");
 

@@ -9,8 +9,8 @@
 namespace  UI
 {
 	//タスクに割り当てるグループ名と固有名
-	const  string  defGroupName("NoName");	//グループ名
-	const  string  defName(				"UI");		//タスク名
+	const  string  defGroupName("UI");	//グループ名
+	const  string  defName(				"NoName");		//タスク名
 	//-------------------------------------------------------------------
 	class  Resource : public BResource
 	{
@@ -61,7 +61,6 @@ namespace  UI
 
 		//数字変換
 		BChara::DrawInfo font_number(int num_);
-
 		//残り時間描画
 		void Timer_Render(int px_, int py_,int time_);
 	};
