@@ -49,9 +49,20 @@ namespace  UI
 	//変更可◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇◇
 		//追加したい変数・メソッドはここに追加する
 		//BCharaに含まれないモノのみここに追加する
+
+		//描画サイズ
+		const int size = 4;
+
+		//残り時間受け取り
 		int time;
+
+		//文字変換
 		BChara::DrawInfo font_ward(int ward_);
+
+		//数字変換
 		BChara::DrawInfo font_number(int num_);
+
+		//残り時間描画
 		void Timer_Render(int px_, int py_,int time_);
 	};
 }

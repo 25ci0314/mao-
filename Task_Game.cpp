@@ -9,6 +9,7 @@
 #include "sound.h"
 #include "Task_Player.h"
 #include "BChara.h"
+#include "Task_UI.h"
 
 
 namespace  Game
@@ -46,8 +47,8 @@ namespace  Game
 
 
 		this->time =this->limit; // 3分
-
-
+		auto ui = UI::Object::Create(true);
+		ui->pos = ML::Vec2(1000, 500);
 
 		//迷路マップ生成
 		auto board = Board::Object::Create(true);
@@ -93,6 +94,8 @@ namespace  Game
 		//残り時間計測
 		this->time--;
 		//残り時間渡し
+		auto ui = ge->GetTask<UI::Object>(UI::defGroupName, UI::defName);
+		ui->time = this->time / 60;
 
 		if (inp.S1.down) {
 			BChara::winner = 1;

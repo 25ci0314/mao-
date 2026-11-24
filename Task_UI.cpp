@@ -73,18 +73,17 @@ namespace  UI
 
 	BChara::DrawInfo Object::font_number(int num_) {
 		ML::Color  defColor(1, 1, 1, 1);
-		int size = 2;
 		BChara::DrawInfo number[] = {
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 0,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 1,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 2,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 3,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 4,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 5,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 6,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 7,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 8,9 * 2,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 9,9 * 2,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 0,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 1,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 2,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 3,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 4,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 5,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 6,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 7,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 8,9 * 1,8,9),defColor},
+			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 9,9 * 1,8,9),defColor},
 		};
 		return BChara::DrawInfo(number[num_]);
 	}
@@ -94,14 +93,14 @@ namespace  UI
 		{
 			w = time_ % 10;
 			BChara::DrawInfo dw = this->font_number(w);
-			dw.draw.Offset(px_ + (8 * 2), py_);
+			dw.draw.Offset(px_ + (this->size * 8), py_);
 			this->res->font->Draw(dw.draw, dw.src);
 		}
 
 		{
 			t = (time_ % 100) - w;
 			BChara::DrawInfo dt = this->font_number(t);
-			dt.draw.Offset(px_ + (8 * 1), py_);
+			dt.draw.Offset(px_ + (this->size * 8), py_);
 		}
 		{
 			h = time_ / 100;
