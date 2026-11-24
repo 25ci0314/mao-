@@ -23,7 +23,7 @@ namespace  Ending
 		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
 		this->imgSatu = DG::Image::Create("./data/image/ŽD‰J02.png");
 		this->imgRotou = DG::Image::Create("./data/image/˜H“ªƒƒS.png");
-		this->imgE = DG::Image::Create("./data/image/Elogo.png");
+		this->imgE = DG::Image::Create("./data/image/spacekey.png");
 		this->imgAme = DG::Image::Create("./data/image/ame02.png");
 		this->imgHensai = DG::Image::Create("./data/image/•ÔÏƒƒS.png");
 		
@@ -234,10 +234,10 @@ namespace  Ending
 		}
 
 		if (Tcnt > 30) {
-			//ŒãŽèŸ—˜ƒƒS
+			//˜H“ª‚É–À‚¤ƒƒS
 			if (BChara::winner == 1)
 			{
-				ML::Box2D draw(this->lPosX, this->lPosY, 2172 / 3, 724 / 3);
+				ML::Box2D draw(this->lPosX + 50, 50, 2172 / 3, 724 / 3);
 				ML::Box2D src(0, 0, 2172, 724);
 				this->res->imgRotou->Draw(draw, src);
 			}
@@ -246,33 +246,33 @@ namespace  Ending
 		if (Tcnt > 120) {
 			//ƒ^ƒCƒgƒ‹‚É–ß‚éƒƒS
 			if (this->timecnt % 80 > 40) {
-				ML::Box2D draw(1280 / 4, 720 / 8 * 4, 620, 200);
-				ML::Box2D src(0, 0, 1408, 768);
+				ML::Box2D draw(1280 / 4 + 40, 720 / 8 * 5.8f, 2172 / 4, 724 / 4);
+				ML::Box2D src(0, 0, 2172, 724);
 				this->res->imgE->Draw(draw, src);
 
 			}
 		}
 
 
-		if (Tcnt > 120) {
-			//‹îƒ{ƒ^ƒ“
-			{
-				ML::Box2D draw;
+		//if (Tcnt > 120) {
+		//	//‹îƒ{ƒ^ƒ“
+		//	{
+		//		ML::Box2D draw;
 
-				if (mpos.x >= 520 && mpos.x <= 720 &&
-					mpos.y >= 500 && mpos.y <= 690)
-				{
-					draw = ML::Box2D(-135, -102, 270, 204);
-					draw.Offset(PosX, PosY);
-				}
-				else {
-					draw = ML::Box2D(-60 * 2, -45 * 2, 120 * 2, 90 * 2);
-					draw.Offset(PosX, PosY);
-				}
-				ML::Box2D src(0, 0, 3200, 2400);
-				this->res->imgUI->Draw(draw, src);
-			}
-		}
+		//		if (mpos.x >= 520 && mpos.x <= 720 &&
+		//			mpos.y >= 500 && mpos.y <= 690)
+		//		{
+		//			draw = ML::Box2D(-135, -102, 270, 204);
+		//			draw.Offset(PosX, PosY);
+		//		}
+		//		else {
+		//			draw = ML::Box2D(-60 * 2, -45 * 2, 120 * 2, 90 * 2);
+		//			draw.Offset(PosX, PosY);
+		//		}
+		//		ML::Box2D src(0, 0, 3200, 2400);
+		//		this->res->imgUI->Draw(draw, src);
+		//	}
+		//}
 
 
 	}
