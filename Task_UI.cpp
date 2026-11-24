@@ -19,6 +19,7 @@ namespace  UI
 	//ƒŠƒ\[ƒX‚Ì‰ð•ú
 	bool  Resource::Finalize()
 	{
+		this->font.reset();
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -89,24 +90,24 @@ namespace  UI
 	}
 
 	void Object::Timer_Render(int px_, int py_, int time_) {
-
+		int h, t, w;
 		{
-			this->h = time_ / 100;
-			BChara::DrawInfo  dh = this->font_number(this->h);
+			h = time_ / 100;
+			BChara::DrawInfo  dh = this->font_number(h);
 			dh.draw.Offset(px_, py_);
 			this->res->font->Draw(dh.draw, dh.src);
 		}
 
 		{
-			this->t = (time_ % 100) / 10;
-			BChara::DrawInfo dt = this->font_number(this->t);
+			t = (time_ % 100) / 10;
+			BChara::DrawInfo dt = this->font_number(t);
 			dt.draw.Offset(px_ + (this->size * 8), py_);
 			this->res->font->Draw(dt.draw, dt.src);
 		}
 
 		{
-			this->w = time_ % 10;
-			BChara::DrawInfo dw = this->font_number(this->w);
+			w = time_ % 10;
+			BChara::DrawInfo dw = this->font_number(w);
 			dw.draw.Offset(px_ + (this->size * 8 * 2), py_);
 			this->res->font->Draw(dw.draw, dw.src);
 		}
