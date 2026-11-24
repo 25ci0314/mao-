@@ -83,7 +83,7 @@ namespace  Title {
 		this->foot = DG::Image::Create ("./data/image/foot.jpg");//足
 		this->horse = DG::Image::Create ("./data/image/horse.jpg");//馬
 		this->doragon = DG::Image::Create ("./data/image/doragon.png");//ドラゴン
-		this->space = DG::Image::Create ("./data/image/Press the space key.png");//スペースキーをおしてね
+		this->space = DG::Image::Create ("./data/image/key.png");//スペースキーをおしてね
 		this->pageback = DG::Image::Create ("./data/image/pageback.png");//前のページへ
 		this->pagemoveon = DG::Image::Create ("./data/image/pagemoveon.png");//次のページへ
 
@@ -562,9 +562,10 @@ namespace  Title {
 				draw.Offset (0, 0);
 				this->res->BG->Draw (draw, src);
 			}
+			//スペースキー
 			if (timeCount > 60) {
-				ML::Box2D  draw (350, 350, 600, 300);
-				ML::Box2D  src (0, 0, 2048, 768);
+				ML::Box2D  draw (300, 385, 600, 200);
+				ML::Box2D  src (0, 0, 2172, 724);
 
 				draw.Offset (0, 0);
 				this->res->space->Draw (draw, src);
