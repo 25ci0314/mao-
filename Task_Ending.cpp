@@ -22,7 +22,7 @@ namespace  Ending
 		this->imgMaoju = DG::Image::Create("./data/image/–‚‰¤é03.png");
 		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
 		this->imgSatu = DG::Image::Create("./data/image/ŽD‰J02.png");
-		this->imgK = DG::Image::Create("./data/image/ŒãŽè01.png");
+		this->imgRotou = DG::Image::Create("./data/image/˜H“ªƒƒS.png");
 		this->imgE = DG::Image::Create("./data/image/Elogo.png");
 		this->imgAme = DG::Image::Create("./data/image/ame02.png");
 		this->imgHensai = DG::Image::Create("./data/image/•ÔÏƒƒS.png");
@@ -51,7 +51,7 @@ namespace  Ending
 		this->imgMaoju.reset();
 		this->imgBG.reset();
 		this->imgE.reset();
-		this->imgK.reset();
+		this->imgRotou.reset();
 		this->imgSatu.reset();
 		this->imgAme.reset();
 		this->imgUI.reset();
@@ -237,9 +237,9 @@ namespace  Ending
 			//ŒãŽèŸ—˜ƒƒS
 			if (BChara::winner == 1)
 			{
-				ML::Box2D draw(this->lPosX, this->lPosY, 868, 188 - 30);
-				ML::Box2D src(0, 0, 823, 184);
-				this->res->imgK->Draw(draw, src);
+				ML::Box2D draw(this->lPosX, this->lPosY, 2172 / 3, 724 / 3);
+				ML::Box2D src(0, 0, 2172, 724);
+				this->res->imgRotou->Draw(draw, src);
 			}
 		}
 
