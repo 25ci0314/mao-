@@ -61,6 +61,7 @@ namespace  Title
 		DG::Image::SP	doragonCPU;//竜モードのCPU戦
 		DG::Image::SP	pageback;//前のページへ
 		DG::Image::SP	pagemoveon;// 次のページへ
+
 		DG::Image::SP	GB;//緑背景画像
 		DG::Font::SP    fontA;//現在の状態を表示(通常モード)
 		DG::Font::SP    fontB;//現在の状態を表示(ランダムモード)

@@ -77,17 +77,16 @@ namespace  Title {
 		this->Yes = DG::Image::Create ("./data/image/Yes.png");//はい画像
 		this->No = DG::Image::Create ("./data/image/No.png");//いいえ画像
 		this->BG = DG::Image::Create ("./data/image/BG0.png");//黒背景画像
-		this->setumei0 = DG::Image::Create ("./data/image/setumei.png");//説明画像1ページ
-		this->setumei1 = DG::Image::Create ("./data/image/kari1.png");//説明画像2ページ
-		this->setumei2 = DG::Image::Create ("./data/image/kari2.jpg");//説明画像3ページ
+		this->setumei0 = DG::Image::Create ("./data/image/魔王城の借用書騒動.png");//説明画像1ページ
+		this->setumei1 = DG::Image::Create ("./data/image/setumei.png");//説明画像2ページ
+		this->setumei2 = DG::Image::Create ("./data/image/setumei01.png");//説明画像3ページ
 		this->foot = DG::Image::Create ("./data/image/foot.jpg");//足
 		this->horse = DG::Image::Create ("./data/image/horse.png");//馬
 		this->doragon = DG::Image::Create ("./data/image/doragon.png");//ドラゴン
 		this->space = DG::Image::Create ("./data/image/key.png");//スペースキーをおしてね
 		this->pageback = DG::Image::Create ("./data/image/pageback.png");//前のページへ
 		this->pagemoveon = DG::Image::Create ("./data/image/pagemoveon.png");//次のページへ
-
-
+		
 		this->GB = DG::Image::Create ("./data/image/GB.png");//背景画像
 		this->fontA = DG::Font::Create ("HGS教科書体", 40, 80);
 		this->fontB = DG::Font::Create ("HGS教科書体", 40, 80);
@@ -679,7 +678,7 @@ namespace  Title {
 			//説明画面
 			{
 				ML::Box2D  draw (200, 0, 780, 560);
-				ML::Box2D  src (0, 0, 1536, 1024);
+				ML::Box2D  src (0, 0, 1672, 941);
 
 				draw.Offset (0, 0);
 				this->res->setumei0->Draw (draw, src);
