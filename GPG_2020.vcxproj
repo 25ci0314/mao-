@@ -157,6 +157,7 @@
     <ClCompile Include="Task_Ending.cpp" />
     <ClCompile Include="Task_Enemy.cpp" />
     <ClCompile Include="Task_Game.cpp" />
+    <ClCompile Include="Task_Item.cpp" />
     <ClCompile Include="Task_Player.cpp" />
     <ClCompile Include="Task_StartTimer.cpp" />
     <ClCompile Include="Task_Title.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Task_Ending.h" />
     <ClInclude Include="Task_Enemy.h" />
     <ClInclude Include="Task_Game.h" />
+    <ClInclude Include="Task_Item.h" />
     <ClInclude Include="Task_Player.h" />
     <ClInclude Include="Task_StartTimer.h" />
     <ClInclude Include="Task_Title.h" />

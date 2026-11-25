@@ -10,10 +10,14 @@ namespace Player
     const string defGroupName("本編");
     const string defName("魔王");
 
+    //-------------------------------------------------------------------
+    //リソースクラス
+    //-------------------------------------------------------------------
     class Resource : public BResource
     {
         bool Initialize() override;
         bool Finalize() override;
+
         Resource();
 
     public:
@@ -25,9 +29,13 @@ namespace Player
         static WP instance;
         static Resource::SP Create();
 
+        //魔王の画像
         DG::Image::SP img;
     };
 
+    //-------------------------------------------------------------------
+    //オブジェクトクラス
+    //-------------------------------------------------------------------
     class Object : public BTask
     {
     public:
@@ -36,6 +44,7 @@ namespace Player
         typedef shared_ptr<Object> SP;
         typedef weak_ptr<Object> WP;
 
+        //タスク生成窓口
         static Object::SP Create(bool flagGameEnginePushBack_);
 
         Resource::SP res;
@@ -52,15 +61,20 @@ namespace Player
         bool Finalize();
 
     public:
-        //現在のマス
+
+        //---------------------------------------------------------------
+        //魔王の移動関係
+        //---------------------------------------------------------------
+
+        //現在のマス座標
         int mapX;
         int mapY;
 
-        //現在の画面座標
+        //現在の描画座標
         float posX;
         float posY;
 
-        //移動先のマス
+        //移動先のマス座標
         int targetX;
         int targetY;
 
@@ -70,17 +84,84 @@ namespace Player
         //移動中かどうか
         bool moving;
 
-        //入力された方向
+        //入力方向
         int inputX;
         int inputY;
 
-        // 魔王が向いている方向
-        // 0 = 下、1 = 左、2 = 右、3 = 上
+        //魔王の向き
+        //0=下 1=左 2=右 3=上
         int direction;
 
-        int animFrame;  // アニメーションのコマ番号（0～3）
-        int animCnt;    // アニメーションの時間管理
+        //アニメーション
+        int animFrame;
+        int animCnt;
 
+        //---------------------------------------------------------------
+        //荷物関係
+        //---------------------------------------------------------------
+
+        //荷物を持っているか
+        bool hasPackage;
+
+        //荷物の価値
+        int packageValue;
+
+        //荷物の番号
+        int packageNumber;
+
+        //荷物の配達先
+        int packageDeliveryX;
+        int packageDeliveryY;
+
+        //---------------------------------------------------------------
+        //荷物の追従関係
+        //---------------------------------------------------------------
+
+        //荷物の描画座標
+        float packagePosX;
+        float packagePosY;
+
+        //移動経路を記録する最大数
+        static const int FOLLOW_MAX = 12;
+
+        //魔王が通った座標を記録する配列
+        float followX[FOLLOW_MAX];
+        float followY[FOLLOW_MAX];
+
+        //---------------------------------------------------------------
+        //荷物の再取得防止
+        //---------------------------------------------------------------
+
+        //荷物を置いた直後かどうか
+        bool dropLock;
+
+        //荷物を置いたマス
+        int dropX;
+        int dropY;
+
+        //---------------------------------------------------------------
+        //荷物関係の関数
+        //---------------------------------------------------------------
+
+        //荷物操作
+        void PackageControl();
+
+        //荷物を拾う
+        void PickupPackage();
+
+        //荷物を置く
+        void DropPackage();
+
+        //荷物を配達する
+        void DeliveryPackage();
+
+        //荷物のダメージ処理
+        void DamagePackage(bool powerUp);
+
+        //正しい配達先か確認
+        bool IsDeliveryPoint();
+
+        //荷物の追従処理
+        void PackageFollow();
     };
 }
-

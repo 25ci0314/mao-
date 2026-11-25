@@ -14,15 +14,19 @@ namespace Board
         bool Initialize() override;
         bool Finalize() override;
         Resource();
+
     public:
         ~Resource();
+
         typedef shared_ptr<Resource> SP;
         typedef weak_ptr<Resource> WP;
+
         static WP instance;
         static Resource::SP Create();
 
         // 壁タイルの画像
         DG::Image::SP img;
+
         // 家の画像：ドアが向く方向ごとに1枚ずつ用意
         // Down=上辺、Up=下辺、Right=左辺、Left=右辺
         DG::Image::SP houseDown;
@@ -36,18 +40,25 @@ namespace Board
     {
     public:
         virtual ~Object();
+
         typedef shared_ptr<Object> SP;
         typedef weak_ptr<Object> WP;
+
         static Object::SP Create(bool flagGameEnginePushBack_);
+
         Resource::SP res;
+
     private:
         Object();
+
         bool B_Initialize();
         bool B_Finalize();
+
         bool Initialize();
         void UpDate() override;
         void Render2D_AF() override;
         bool Finalize();
+
     public:
 
         // 画面上のマップ左上座標（ピクセル）
@@ -69,5 +80,22 @@ namespace Board
 
         // 指定マスが通行不可か判定（範囲外も不可）
         bool IsWall(int x, int y);
+
+        //---------------------------------------------------------------
+        // 配達先
+        //---------------------------------------------------------------
+
+        // 配達先の最大数
+        static const int MAX_DELIVERY = 14;
+
+        // 配達先の座標
+        int deliveryX[MAX_DELIVERY];
+        int deliveryY[MAX_DELIVERY];
+
+        // 配達先の初期化
+        void Delivery_Initialize();
+
+        // 配達先のマスかどうか
+        bool IsDeliveryPoint(int x, int y);
     };
 }

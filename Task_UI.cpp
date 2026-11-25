@@ -1,172 +1,724 @@
 //-------------------------------------------------------------------
-//
+//ゲームUI
 //-------------------------------------------------------------------
-#include  "MyPG.h"
-#include  "Task_UI.h"
-#include  "Task_Game.h"
+#include "MyPG.h"
+#include "Task_UI.h"
+#include "Task_Game.h"
+#include "Task_Board.h"
+#include "Task_Item.h"
+#include "Task_Player.h"
 
-namespace  UI
+namespace UI
 {
-	Resource::WP  Resource::instance;
-	//-------------------------------------------------------------------
-	//リソースの初期化
-	bool  Resource::Initialize()
-	{
-		this->font = DG::Image::Create("./data/image/pixel_font.png");
-		return true;
-	}
-	//-------------------------------------------------------------------
-	//リソースの解放
-	bool  Resource::Finalize()
-	{
-		this->font.reset();
-		return true;
-	}
-	//-------------------------------------------------------------------
-	//「初期化」タスク生成時に１回だけ行う処理
-	bool  Object::Initialize()
-	{
-		//スーパークラス初期化
-		__super::Initialize(defGroupName, defName, true);
-		//リソースクラス生成orリソース共有
-		this->res = Resource::Create();
+    Resource::WP Resource::instance;
 
-		//★データ初期化
-		
-		//★タスクの生成
+    //-------------------------------------------------------------------
+    //リソースの初期化
+    //-------------------------------------------------------------------
+    bool Resource::Initialize()
+    {
+        //フォント画像の読み込み
+        this->font =
+            DG::Image::Create("./data/image/pixel_font.png");
 
-		return  true;
-	}
-	//-------------------------------------------------------------------
-	//「終了」タスク消滅時に１回だけ行う処理
-	bool  Object::Finalize()
-	{
-		//★データ＆タスク解放
+        //配達先の吹き出し画像の読み込み
+        this->deliveryImg =
+            DG::Image::Create("./data/image/Package_UI.png");
 
+        //残り返済額の文字画像の読み込み
+        this->debtImg =
+            DG::Image::Create("./data/image/残り返済額.png");
 
-		if (!ge->QuitFlag() && this->nextTaskCreate) {
-			//★引き継ぎタスクの生成
-		}
+        return true;
+    }
 
-		return  true;
-	}
-	//-------------------------------------------------------------------
-	//「更新」１フレーム毎に行う処理
-	void  Object::UpDate()
-	{
-	}
-	//-------------------------------------------------------------------
-	//「２Ｄ描画」１フレーム毎に行う処理
-	void  Object::Render2D_AF()
-	{
-		this->Timer_Render(this->tPos.x, this->tPos.y, this->time);
-	}
+    //-------------------------------------------------------------------
+    //リソースの解放
+    //-------------------------------------------------------------------
+    bool Resource::Finalize()
+    {
+        //フォント画像の解放
+        this->font.reset();
 
-	BChara::DrawInfo Object::font_ward(int ward_)
-	{
-		ML::Color  defColor(1, 1, 1, 1);
-		int size = 2;
-		BChara::DrawInfo ward[] = {
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 0,9 * 0,8,9),defColor}
-		};
-		return BChara::DrawInfo();
-	}
+        //配達先の吹き出し画像の解放
+        this->deliveryImg.reset();
 
-	BChara::DrawInfo Object::font_number(int num_) {
-		ML::Color  defColor(1, 1, 1, 1);
-		BChara::DrawInfo number[] = {
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 0,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 1,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 2,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 3,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 4,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 5,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 6,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 7,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 8,9 * 1,8,9),defColor},
-			{ML::Box2D(-4 * size,-4 * size,8 * size,9 * size),ML::Box2D(8 * 9,9 * 1,8,9),defColor},
-		};
-		return BChara::DrawInfo(number[num_]);
-	}
+        //残り返済額の文字画像の解放
+        this->debtImg.reset();
 
-	void Object::Timer_Render(int px_, int py_, int time_) {
-		int h, t, w;
-		{
-			h = time_ / 100;
-			BChara::DrawInfo  dh = this->font_number(h);
-			dh.draw.Offset(px_, py_);
-			this->res->font->Draw(dh.draw, dh.src);
-		}
+        return true;
+    }
 
-		{
-			t = (time_ % 100) / 10;
-			BChara::DrawInfo dt = this->font_number(t);
-			dt.draw.Offset(px_ + (this->size * 8), py_);
-			this->res->font->Draw(dt.draw, dt.src);
-		}
+    //-------------------------------------------------------------------
+    //「初期化」タスク生成時に１回だけ行う処理
+    //-------------------------------------------------------------------
+    bool Object::Initialize()
+    {
+        //スーパークラス初期化
+        __super::Initialize(defGroupName, defName, true);
 
-		{
-			w = time_ % 10;
-			BChara::DrawInfo dw = this->font_number(w);
-			dw.draw.Offset(px_ + (this->size * 8 * 2), py_);
-			this->res->font->Draw(dw.draw, dw.src);
-		}
+        //リソースクラス生成orリソース共有
+        this->res = Resource::Create();
 
-	}
+        //★データ初期化
 
-	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-	//以下は基本的に変更不要なメソッド
-	//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-	//-------------------------------------------------------------------
-	//タスク生成窓口
-	Object::SP  Object::Create(bool  flagGameEnginePushBack_)
-	{
-		Object::SP  ob = Object::SP(new  Object());
-		if (ob) {
-			ob->me = ob;
-			if (flagGameEnginePushBack_) {
-				ge->PushBack(ob);//ゲームエンジンに登録
-				
-			}
-			if (!ob->B_Initialize()) {
-				ob->Kill();//イニシャライズに失敗したらKill
-			}
-			return  ob;
-		}
-		return nullptr;
-	}
-	//-------------------------------------------------------------------
-	bool  Object::B_Initialize()
-	{
-		return  this->Initialize();
-	}
-	//-------------------------------------------------------------------
-	Object::~Object() { this->B_Finalize(); }
-	bool  Object::B_Finalize()
-	{
-		auto  rtv = this->Finalize();
-		return  rtv;
-	}
-	//-------------------------------------------------------------------
-	Object::Object() {	}
-	//-------------------------------------------------------------------
-	//リソースクラスの生成
-	Resource::SP  Resource::Create()
-	{
-		if (auto sp = instance.lock()) {
-			return sp;
-		}
-		else {
-			sp = Resource::SP(new  Resource());
-			if (sp) {
-				sp->Initialize();
-				instance = sp;
-			}
-			return sp;
-		}
-	}
-	//-------------------------------------------------------------------
-	Resource::Resource() {}
-	//-------------------------------------------------------------------
-	Resource::~Resource() { this->Finalize(); }
+        //残り時間の初期化
+        this->time = 0;
+
+        //---------------------------------------------------------------
+        //UIの表示位置
+        //---------------------------------------------------------------
+
+        //タイマーの表示位置
+        this->tPos = ML::Vec2(1100, 50);
+
+        //所持金の表示位置
+        this->moneyPos = ML::Vec2(50, 50);
+
+        //残り返済額の表示位置
+        this->debtPos = ML::Vec2(600, 50);
+
+        //描画優先度
+        //家や壁より手前に描画するための設定
+        this->render2D_Priority[1] = 0.8f;
+
+        //★タスクの生成
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------
+    //「終了」タスク消滅時に１回だけ行う処理
+    //-------------------------------------------------------------------
+    bool Object::Finalize()
+    {
+        //★データ＆タスク解放
+
+        if (!ge->QuitFlag() && this->nextTaskCreate)
+        {
+            //★引き継ぎタスクの生成
+        }
+
+        return true;
+    }
+
+    //-------------------------------------------------------------------
+    //「更新」１フレーム毎に行う処理
+    //-------------------------------------------------------------------
+    void Object::UpDate()
+    {
+    }
+
+    //-------------------------------------------------------------------
+    //「２Ｄ描画」１フレーム毎に行う処理
+    //-------------------------------------------------------------------
+    void Object::Render2D_AF()
+    {
+        //---------------------------------------------------------------
+        //残り時間の描画
+        //---------------------------------------------------------------
+
+        this->Timer_Render(
+            this->tPos.x,
+            this->tPos.y,
+            this->time
+        );
+
+        //---------------------------------------------------------------
+        //所持金と残り返済額を描画
+        //---------------------------------------------------------------
+
+        this->Money_Render();
+
+        //---------------------------------------------------------------
+        //配達先の吹き出しを描画
+        //---------------------------------------------------------------
+
+        this->Delivery_Render();
+    }
+
+    //-------------------------------------------------------------------
+    //文字変換
+    //-------------------------------------------------------------------
+    BChara::DrawInfo Object::font_ward(int ward_)
+    {
+        ML::Color defColor(1, 1, 1, 1);
+
+        int size = 2;
+
+        BChara::DrawInfo ward[] =
+        {
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 0, 9 * 0, 8, 9),
+                defColor
+            }
+        };
+
+        return BChara::DrawInfo();
+    }
+
+    //-------------------------------------------------------------------
+    //数字変換
+    //-------------------------------------------------------------------
+    BChara::DrawInfo Object::font_number(int num_)
+    {
+        ML::Color defColor(1, 1, 1, 1);
+
+        BChara::DrawInfo number[] =
+        {
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 0, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 1, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 2, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 3, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 4, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 5, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 6, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 7, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 8, 9 * 1, 8, 9),
+                defColor
+            },
+            {
+                ML::Box2D(-4 * size, -4 * size, 8 * size, 9 * size),
+                ML::Box2D(8 * 9, 9 * 1, 8, 9),
+                defColor
+            },
+        };
+
+        //数字の範囲外防止
+        if (num_ < 0 || num_ > 9)
+        {
+            num_ = 0;
+        }
+
+        return BChara::DrawInfo(number[num_]);
+    }
+
+    //-------------------------------------------------------------------
+    //残り時間描画
+    //-------------------------------------------------------------------
+    void Object::Timer_Render(int px_, int py_, int time_)
+    {
+        //画像が存在しない場合は描画しない
+        if (res == nullptr || res->font == nullptr)
+        {
+            return;
+        }
+
+        //数字の範囲外防止
+        if (time_ < 0)
+        {
+            time_ = 0;
+        }
+
+        if (time_ > 999)
+        {
+            time_ = 999;
+        }
+
+        int h, t, w;
+
+        //---------------------------------------------------------------
+        //100の位
+        //---------------------------------------------------------------
+        {
+            h = time_ / 100;
+
+            BChara::DrawInfo dh = this->font_number(h);
+
+            dh.draw.Offset(px_, py_);
+
+            this->res->font->Draw(dh.draw, dh.src);
+        }
+
+        //---------------------------------------------------------------
+        //10の位
+        //---------------------------------------------------------------
+        {
+            t = (time_ % 100) / 10;
+
+            BChara::DrawInfo dt = this->font_number(t);
+
+            dt.draw.Offset(
+                px_ + (this->size * 8),
+                py_
+            );
+
+            this->res->font->Draw(dt.draw, dt.src);
+        }
+
+        //---------------------------------------------------------------
+        //1の位
+        //---------------------------------------------------------------
+        {
+            w = time_ % 10;
+
+            BChara::DrawInfo dw = this->font_number(w);
+
+            dw.draw.Offset(
+                px_ + (this->size * 8 * 2),
+                py_
+            );
+
+            this->res->font->Draw(dw.draw, dw.src);
+        }
+    }
+
+    //-------------------------------------------------------------------
+    //所持金と残り返済額を描画
+    //-------------------------------------------------------------------
+    void Object::Money_Render()
+    {
+        //ゲーム本編タスクを取得
+        auto game = ge->GetTask<Game::Object>(
+            Game::defGroupName,
+            Game::defName
+        );
+
+        //ゲーム本編が存在しない場合
+        if (game == nullptr)
+        {
+            return;
+        }
+
+        //---------------------------------------------------------------
+        //魔王の所持金を取得
+        //---------------------------------------------------------------
+
+        int money = game->money;
+
+        //---------------------------------------------------------------
+        //残り返済額を取得
+        //---------------------------------------------------------------
+
+        int remainingDebt = game->GetRemainingDebt();
+
+        //---------------------------------------------------------------
+        //所持金を描画
+        //---------------------------------------------------------------
+
+        Number_Render(
+            moneyPos.x,
+            moneyPos.y,
+            money
+        );
+
+        //---------------------------------------------------------------
+        //残り返済額の文字を描画
+        //---------------------------------------------------------------
+
+        if (res != nullptr && res->debtImg != nullptr)
+        {
+            ML::Box2D draw(
+                debtPos.x - 210,
+                debtPos.y - 25,
+                190,
+                60
+            );
+
+            ML::Box2D src(
+                0,
+                0,
+                2172,
+                724
+            );
+
+            res->debtImg->Draw(draw, src);
+        }
+
+        //---------------------------------------------------------------
+        //残り返済額の数字を描画
+        //---------------------------------------------------------------
+
+        Number_Render(
+            debtPos.x,
+            debtPos.y,
+            remainingDebt
+        );
+    }
+
+    //-------------------------------------------------------------------
+    //指定した金額を描画
+    //-------------------------------------------------------------------
+    void Object::Number_Render(
+        int px_,
+        int py_,
+        int number_)
+    {
+        //画像が存在しない場合
+        if (res == nullptr || res->font == nullptr)
+        {
+            return;
+        }
+
+        //金額がマイナスにならないようにする
+        if (number_ < 0)
+        {
+            number_ = 0;
+        }
+
+        //---------------------------------------------------------------
+        //数字を1桁ずつ保存する配列
+        //---------------------------------------------------------------
+
+        int numbers[10];
+
+        //数字の桁数
+        int count = 0;
+
+        //---------------------------------------------------------------
+        //金額を1桁ずつ分解する
+        //---------------------------------------------------------------
+
+        do
+        {
+            //1の位を取得
+            numbers[count] = number_ % 10;
+
+            //次の桁へ移動
+            number_ /= 10;
+
+            //桁数を加算
+            count++;
+
+        } while (number_ > 0 && count < 10);
+
+        //---------------------------------------------------------------
+        //大きい桁から順番に描画する
+        //---------------------------------------------------------------
+
+        for (int i = count - 1; i >= 0; i--)
+        {
+            //数字に対応した描画情報を取得
+            BChara::DrawInfo drawInfo =
+                this->font_number(numbers[i]);
+
+            //数字の表示位置を調整
+            drawInfo.draw.Offset(
+                px_ + (count - 1 - i) * size * 8,
+                py_
+            );
+
+            //数字を描画
+            this->res->font->Draw(
+                drawInfo.draw,
+                drawInfo.src
+            );
+        }
+    }
+
+    //-------------------------------------------------------------------
+    //すべての配達先を描画
+    //-------------------------------------------------------------------
+    void Object::Delivery_Render()
+    {
+        //アイテムタスクを取得
+        auto item = ge->GetTask<Item::Object>(
+            Item::defGroupName,
+            Item::defName
+        );
+
+        //魔王タスクを取得
+        auto player = ge->GetTask<Player::Object>(
+            Player::defGroupName,
+            Player::defName
+        );
+
+        //---------------------------------------------------------------
+        //マップ上にある荷物の配達先を描画
+        //---------------------------------------------------------------
+
+        if (item != nullptr)
+        {
+            //すべてのアイテムを調べる
+            for (int i = 0; i < Item::Object::MAX_ITEMS; i++)
+            {
+                //存在している荷物か確認
+                if (item->items[i].active &&
+                    item->items[i].type == Item::Item_Package)
+                {
+                    //荷物の配達先を取得
+                    int x = item->items[i].deliveryX;
+                    int y = item->items[i].deliveryY;
+
+                    //荷物の番号を取得
+                    int number = item->items[i].number;
+
+                    //配達先の吹き出しを描画
+                    this->DeliveryIcon_Render(
+                        x,
+                        y,
+                        number
+                    );
+                }
+            }
+        }
+
+        //---------------------------------------------------------------
+        //魔王が持っている荷物の配達先を描画
+        //---------------------------------------------------------------
+
+        if (player != nullptr)
+        {
+            //魔王が荷物を持っている場合
+            if (player->hasPackage)
+            {
+                //荷物を拾っても吹き出しを消さない
+                this->DeliveryIcon_Render(
+                    player->packageDeliveryX,
+                    player->packageDeliveryY,
+                    player->packageNumber
+                );
+            }
+        }
+    }
+
+    //-------------------------------------------------------------------
+    //指定した家に吹き出しを描画
+    //-------------------------------------------------------------------
+    void Object::DeliveryIcon_Render(
+        int x_,
+        int y_,
+        int number_)
+    {
+        //---------------------------------------------------------------
+        //マップタスクを取得
+        //---------------------------------------------------------------
+
+        auto board = ge->GetTask<Board::Object>(
+            Board::defGroupName,
+            Board::defName
+        );
+
+        //マップが存在しない場合
+        if (board == nullptr)
+        {
+            return;
+        }
+
+        //画像が存在しない場合
+        if (res == nullptr || res->deliveryImg == nullptr)
+        {
+            return;
+        }
+
+        //荷物の番号が範囲外の場合
+        if (number_ < 1 || number_ > 5)
+        {
+            return;
+        }
+
+        //正しい配達先か確認
+        if (!board->IsDeliveryPoint(x_, y_))
+        {
+            return;
+        }
+
+        //---------------------------------------------------------------
+        //吹き出し画像の切り取り範囲
+        //左から1番、2番、3番、4番、5番
+        //隣の吹き出しが映り込まないように調整
+        //---------------------------------------------------------------
+
+        ML::Box2D deliverySrc[5] =
+        {
+            ML::Box2D(16,   140, 412, 425), //1番（変更なし）
+            ML::Box2D(445,  140, 410, 425), //2番（変更なし）
+            ML::Box2D(865,  140, 418, 425), //3番
+            ML::Box2D(1285, 140, 422, 425), //4番
+            ML::Box2D(1710, 140, 426, 425)  //5番
+        };
+
+        //---------------------------------------------------------------
+        //マス座標を画面座標に変換
+        //---------------------------------------------------------------
+
+        int px = board->boardX +
+            x_ * board->cellSize;
+
+        int py = board->boardY +
+            y_ * board->cellSize;
+
+        //---------------------------------------------------------------
+        //家の位置に合わせて吹き出しの位置を調整
+        //壁に重ならないように入口側へ表示する
+        //---------------------------------------------------------------
+
+        //上側の家
+        if (y_ == 3)
+        {
+            py -= 64;
+        }
+
+        //下側の家
+        else if (y_ == 11)
+        {
+            py += 24;
+        }
+
+        //左側の家（変更なし）
+        else if (x_ == 3)
+        {
+            px -= 16;
+        }
+
+        //右側の家
+        else if (x_ == 34)
+        {
+            px += 80;
+        }
+
+        //---------------------------------------------------------------
+        //吹き出しの描画サイズ
+        //---------------------------------------------------------------
+
+        int iconW = 48;
+        int iconH = 48;
+
+        //---------------------------------------------------------------
+        //吹き出しの描画位置
+        //---------------------------------------------------------------
+
+        ML::Box2D draw(
+            px - 8,
+            py - 24,
+            iconW,
+            iconH
+        );
+
+        //---------------------------------------------------------------
+        //荷物の番号に対応した吹き出しを描画
+        //配列は0から始まるため番号から1を引く
+        //---------------------------------------------------------------
+
+        this->res->deliveryImg->Draw(
+            draw,
+            deliverySrc[number_ - 1]
+        );
+    }
+
+    //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    //以下は基本的に変更不要なメソッド
+    //★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+    //-------------------------------------------------------------------
+    //タスク生成窓口
+    //-------------------------------------------------------------------
+    Object::SP Object::Create(bool flagGameEnginePushBack_)
+    {
+        Object::SP ob = Object::SP(new Object());
+
+        if (ob)
+        {
+            ob->me = ob;
+
+            if (flagGameEnginePushBack_)
+            {
+                ge->PushBack(ob);//ゲームエンジンに登録
+            }
+
+            if (!ob->B_Initialize())
+            {
+                ob->Kill();//イニシャライズに失敗したらKill
+            }
+
+            return ob;
+        }
+
+        return nullptr;
+    }
+
+    //-------------------------------------------------------------------
+    bool Object::B_Initialize()
+    {
+        return this->Initialize();
+    }
+
+    //-------------------------------------------------------------------
+    Object::~Object()
+    {
+        this->B_Finalize();
+    }
+
+    //-------------------------------------------------------------------
+    bool Object::B_Finalize()
+    {
+        auto rtv = this->Finalize();
+
+        return rtv;
+    }
+
+    //-------------------------------------------------------------------
+    Object::Object()
+    {
+    }
+
+    //-------------------------------------------------------------------
+    //リソースクラスの生成
+    //-------------------------------------------------------------------
+    Resource::SP Resource::Create()
+    {
+        if (auto sp = instance.lock())
+        {
+            return sp;
+        }
+        else
+        {
+            sp = Resource::SP(new Resource());
+
+            if (sp)
+            {
+                sp->Initialize();
+
+                instance = sp;
+            }
+
+            return sp;
+        }
+    }
+
+    //-------------------------------------------------------------------
+    Resource::Resource()
+    {
+    }
+
+    //-------------------------------------------------------------------
+    Resource::~Resource()
+    {
+        this->Finalize();
+    }
 }

@@ -72,9 +72,58 @@ namespace Board
         // マップデータの作成
         Board_Initialize();
 
+        // 配達先の初期化
+        Delivery_Initialize();
+
         return true;
     }
+    //------------------------------------------------------------------
+    // 配達先の初期化
+    //------------------------------------------------------------------
+    void Object::Delivery_Initialize()
+    {
+        // 上側と下側の家
+        for (int i = 0; i < 5; i++)
+        {
+            // 上側の家の前
+            deliveryX[i] = 6 + i * 6;
+            deliveryY[i] = 3;
 
+            // 下側の家の前
+            deliveryX[i + 5] = 6 + i * 6;
+            deliveryY[i + 5] = 11;
+        }
+
+        // 左側の家
+        deliveryX[10] = 3;
+        deliveryY[10] = 4;
+
+        deliveryX[11] = 3;
+        deliveryY[11] = 8;
+
+        // 右側の家
+        deliveryX[12] = 34;
+        deliveryY[12] = 4;
+
+        deliveryX[13] = 34;
+        deliveryY[13] = 8;
+    }
+    //------------------------------------------------------------------
+    // 配達先のマスかどうか
+    //------------------------------------------------------------------
+    bool Object::IsDeliveryPoint(int x, int y)
+    {
+        for (int i = 0; i < MAX_DELIVERY; i++)
+        {
+            if (deliveryX[i] == x &&
+                deliveryY[i] == y)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
     //------------------------------------------------------------------
     // 終了処理
     //------------------------------------------------------------------
