@@ -60,8 +60,9 @@ namespace  Ending
 		int			timecnt;
 		int			Tcnt;
 		int			ET;
+		int			times;
 		ML::Box2D			hitBase;
-
+		DG::Font::SP TestFont;
 
 	};
 }

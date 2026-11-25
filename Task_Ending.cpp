@@ -5,6 +5,7 @@
 #include  "Task_Ending.h"
 #include  "Task_Title.h"
 #include  "Task_Game.h"
+#include  "Task_UI.h"
 #include "randomLib.h"
 #include "sound.h"
 #include"BChara.h"
@@ -20,7 +21,6 @@ namespace  Ending
 		//‰æ‘œ
 		this->imgBG = DG::Image::Create("./data/image/–‚‰¤éV’z01.png");
 		this->imgMaoju = DG::Image::Create("./data/image/–‚‰¤é03.png");
-		this->imgUI = DG::Image::Create("./data/image/Bpush.png");
 		this->imgSatu = DG::Image::Create("./data/image/ŽD‰J02.png");
 		this->imgRotou = DG::Image::Create("./data/image/˜H“ªƒƒS.png");
 		this->imgE = DG::Image::Create("./data/image/spacekey.png");
@@ -95,6 +95,9 @@ namespace  Ending
 		//šƒ^ƒXƒN‚Ì¶¬
 		srand((unsigned)time(NULL));
 		return  true;
+
+		this->TestFont =
+			DG::Font::Create("HGŠÛºÞ¼¯¸M-PRO", 30, 30);
 	}
 	//-------------------------------------------------------------------
 	//uI—¹vƒ^ƒXƒNÁ–ÅŽž‚É‚P‰ñ‚¾‚¯s‚¤ˆ—
@@ -175,6 +178,14 @@ namespace  Ending
 	//u‚Q‚c•`‰æv‚PƒtƒŒ[ƒ€–ˆ‚És‚¤ˆ—
 	void  Object::Render2D_AF()
 	{
+		//ƒQ[ƒ€‚ðŽæ“¾
+		auto game = ge->GetTask<Game::Object>(
+			Game::defGroupName,
+			Game::defName
+		);
+
+
+
 		//•ÔÏ¬Œ÷
 		if (BChara::winner == 0){
 			//”wŒi
@@ -270,25 +281,6 @@ namespace  Ending
 		}
 
 
-		//if (Tcnt > 120) {
-		//	//‹îƒ{ƒ^ƒ“
-		//	{
-		//		ML::Box2D draw;
-
-		//		if (mpos.x >= 520 && mpos.x <= 720 &&
-		//			mpos.y >= 500 && mpos.y <= 690)
-		//		{
-		//			draw = ML::Box2D(-135, -102, 270, 204);
-		//			draw.Offset(PosX, PosY);
-		//		}
-		//		else {
-		//			draw = ML::Box2D(-60 * 2, -45 * 2, 120 * 2, 90 * 2);
-		//			draw.Offset(PosX, PosY);
-		//		}
-		//		ML::Box2D src(0, 0, 3200, 2400);
-		//		this->res->imgUI->Draw(draw, src);
-		//	}
-		//}
 
 
 	}
