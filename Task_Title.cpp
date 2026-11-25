@@ -58,14 +58,9 @@ namespace  Title {
 		this->kyanseru = DG::Image::Create ("./data/image/kyanseru.png"); //キャンセルボタン画像
 		this->state = DG::Image::Create ("./data/image/state.png");//運ゲーか通常かを分ける
 		this->ruru = DG::Image::Create ("./data/image/ru-ru.png");//モード選択画像
-		this->randommode = DG::Image::Create ("./data/image/Randommode.png");//モード選択時のランダムモード
-		this->randommode1 = DG::Image::Create ("./data/image/randommode1.png");//現在のモードがランダムモードであることを表示する画像
-		this->randommode2 = DG::Image::Create ("./data/image/kakuninnRandomtwo.png");//現在のモードがランダムモードであることを表示する画像
-		this->randommode3 = DG::Image::Create ("./data/image/kakuninnRandomCPU.png");//現在のモードがランダムモードであることを表示する画像
-		this->tuuzyoumode = DG::Image::Create ("./data/image/Normalmode.png");//モード選択時の通常モード
-		this->tuuzyoumode1 = DG::Image::Create ("./data/image/Normalmode1.png");//現在のモードが通常モードであることを表示する画像
-		this->tuuzyoumode2 = DG::Image::Create ("./data/image/kakuninntuuzyoutwo.png");//現在のモードが通常モードであることを表示する画像
-		this->tuuzyoumode3 = DG::Image::Create ("./data/image/kakuninntuuzyouCPU.png");//現在のモードが通常モードであることを表示する画像
+		
+		
+		
 		this->twobattle = DG::Image::Create ("./data/image/twobattle.png");//二人対戦画像
 		this->foottwo = DG::Image::Create ("./data/image/foottwobattle.png");//徒歩モードの二人対戦画像
 		this->horsetwo = DG::Image::Create ("./data/image/horsetwobattle.png");//馬モードの二人対戦画像
@@ -74,8 +69,6 @@ namespace  Title {
 		this->horseCPU = DG::Image::Create ("./data/image/houseCPUbattle.png");//馬モードのCPU戦画像
 		this->doragonCPU = DG::Image::Create ("./data/image/doragonCPUbattle.png");//竜モードのCPU戦画像
 		this->cpubattle = DG::Image::Create ("./data/image/cpubattle.png");//CPU戦画像
-		this->Yes = DG::Image::Create ("./data/image/Yes.png");//はい画像
-		this->No = DG::Image::Create ("./data/image/No.png");//いいえ画像
 		this->BG = DG::Image::Create ("./data/image/BG0.png");//黒背景画像
 		this->setumei0 = DG::Image::Create ("./data/image/魔王城の借用書騒動.png");//説明画像1ページ
 		this->setumei1 = DG::Image::Create ("./data/image/setumei.png");//説明画像2ページ
@@ -86,7 +79,7 @@ namespace  Title {
 		this->space = DG::Image::Create ("./data/image/key.png");//スペースキーをおしてね
 		this->pageback = DG::Image::Create ("./data/image/pageback.png");//前のページへ
 		this->pagemoveon = DG::Image::Create ("./data/image/pagemoveon.png");//次のページへ
-		
+		this->erabe = DG::Image::Create ("./data/image/選べ!.png");//次のページへ
 		this->GB = DG::Image::Create ("./data/image/GB.png");//背景画像
 		this->fontA = DG::Font::Create ("HGS教科書体", 40, 80);
 		this->fontB = DG::Font::Create ("HGS教科書体", 40, 80);
