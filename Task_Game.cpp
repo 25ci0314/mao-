@@ -32,10 +32,7 @@ namespace Game
     //-------------------------------------------------------------------
     bool Resource::Initialize()
     {
-        bgm::LoadFile(
-            "normal_bgm",
-            "./data/sound/bgm/ゆるくておそい天国と地獄.mp3"
-        );
+        bgm::LoadFile("normal_bgm","./data/sound/bgm/ゆるくておそい天国と地獄.mp3");
 
         this->imgSU =
             DG::Image::Create("./data/image/数文字素材02.png");
