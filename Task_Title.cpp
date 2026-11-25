@@ -81,7 +81,7 @@ namespace  Title {
 		this->setumei1 = DG::Image::Create ("./data/image/kari1.png");//説明画像2ページ
 		this->setumei2 = DG::Image::Create ("./data/image/kari2.jpg");//説明画像3ページ
 		this->foot = DG::Image::Create ("./data/image/foot.jpg");//足
-		this->horse = DG::Image::Create ("./data/image/horse.jpg");//馬
+		this->horse = DG::Image::Create ("./data/image/horse.png");//馬
 		this->doragon = DG::Image::Create ("./data/image/doragon.png");//ドラゴン
 		this->space = DG::Image::Create ("./data/image/key.png");//スペースキーをおしてね
 		this->pageback = DG::Image::Create ("./data/image/pageback.png");//前のページへ
@@ -494,11 +494,11 @@ namespace  Title {
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D (0, 430, 426, 130);
+					draw = ML::Box2D (0, 400, 426, 200);
 
 				}
 
-				ML::Box2D src (0, 0, 760, 612);
+				ML::Box2D src (0, 0, 640, 360);
 				this->res->foot->Draw (draw, src);
 			}
 
@@ -692,12 +692,12 @@ namespace  Title {
 					mPos.y >= 550 && mPos.y <= 615)
 					// 大きくする
 				{
-					draw = ML::Box2D (585, 480, 380, 220);
+					draw = ML::Box2D (585, 540, 280, 150);
 				}
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D (600, 490, 350, 200);
+					draw = ML::Box2D (600, 550, 250, 120);
 				}
 
 				ML::Box2D src (0, 0, 447, 447);
@@ -733,26 +733,8 @@ namespace  Title {
 				draw.Offset (0, 0);
 				this->res->setumei1->Draw (draw, src);
 			}
+
 			// はい画像
-			{
-				ML::Box2D draw;
-
-				if (mPos.x >= 370 && mPos.x <= 600 &&
-					mPos.y >= 550 && mPos.y <= 615)
-					// 大きくする
-				{
-					draw = ML::Box2D (285, 480, 380, 220);
-				}
-				else
-					// 通常サイズ
-				{
-					draw = ML::Box2D (300, 490, 350, 200);
-				}
-
-				ML::Box2D src (0, 0, 1300, 1300);
-				this->res->pageback->Draw (draw, src);
-			}
-			// いいえ画像
 			{
 				ML::Box2D draw;
 
@@ -760,17 +742,38 @@ namespace  Title {
 					mPos.y >= 550 && mPos.y <= 615)
 					// 大きくする
 				{
-					draw = ML::Box2D (585, 480, 380, 220);
+					draw = ML::Box2D (585, 540, 280, 150);
 				}
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D (600, 490, 350, 200);
+					draw = ML::Box2D (600, 550, 250, 120);
 				}
 
 				ML::Box2D src (0, 0, 447, 447);
 				this->res->pagemoveon->Draw (draw, src);
 			}
+
+			// いいえ画像
+			{
+				ML::Box2D draw;
+
+				if (mPos.x >= 370 && mPos.x <= 600 &&
+					mPos.y >= 550 && mPos.y <= 615)
+					// 大きくする
+				{
+					draw = ML::Box2D (285, 540, 280, 150);
+				}
+				else
+					// 通常サイズ
+				{
+					draw = ML::Box2D (300, 550, 250, 120);
+				}
+
+				ML::Box2D src (0, 0, 1300, 1300);
+				this->res->pageback->Draw (draw, src);
+			}
+		
 			//キャンセル画像
 			{
 				ML::Box2D  draw (1180, 0, 100, 100);
@@ -808,12 +811,12 @@ namespace  Title {
 					mPos.y >= 550 && mPos.y <= 615)
 					// 大きくする
 				{
-					draw = ML::Box2D (285, 480, 380, 220);
+					draw = ML::Box2D (285, 540, 280, 150);
 				}
 				else
 					// 通常サイズ
 				{
-					draw = ML::Box2D (300, 490, 350, 200);
+					draw = ML::Box2D (300, 550, 250, 120);
 				}
 
 				ML::Box2D src (0, 0, 1300, 1300);
