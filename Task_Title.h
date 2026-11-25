@@ -26,25 +26,12 @@ namespace  Title
 		//共有する変数はここに追加する
 		DG::Image::SP	img;//背景画像
 		DG::Image::SP	kyanseru; //キャンセルボタン画像
-		DG::Image::SP	randommode;//モード選択時のランダムモード
-		DG::Image::SP	randommode1;//現在のモードがランダムモードであることを表示する画像
-		DG::Image::SP	randommode2;//現在のモードがランダムモードであることを表示する画像
-		DG::Image::SP	randommode3;//現在のモードがランダムモードであることを表示する画像
-		DG::Image::SP	tuuzyoumode;//モード選択時の通常モード
-		DG::Image::SP	tuuzyoumode1;//現在のモードが通常モードであることを表示する画像
-		DG::Image::SP	tuuzyoumode2;//通常モードの二人対戦の確認画面
-		DG::Image::SP	tuuzyoumode3;//通常モードのCPU戦の確認画面
 		DG::Image::SP	state;//運ゲーか通常かを分ける
 		XI::Mouse::SP   mouse;//マウスを獲得
-		DG::Image::SP	TitleLogo01;
-		DG::Image::SP	TitleLogo02;
-		DG::Image::SP	TitleLogo03;
 		DG::Image::SP	StartLogo;//ボタンを押してね画像
 		DG::Image::SP	ruru;//モード選択画像
 		DG::Image::SP	twobattle;//二人対戦画像
 		DG::Image::SP	cpubattle;//CPU戦画像
-		DG::Image::SP	Yes;//はい画像
-		DG::Image::SP	No;//いいえ画像
 		DG::Image::SP	BG;//黒背景画像
 		DG::Image::SP	setumei0;//説明画像1ページ
 		DG::Image::SP	setumei1;//説明画像2ページ
@@ -61,14 +48,8 @@ namespace  Title
 		DG::Image::SP	doragonCPU;//竜モードのCPU戦
 		DG::Image::SP	pageback;//前のページへ
 		DG::Image::SP	pagemoveon;// 次のページへ
-
+		DG::Image::SP	erabe;//能力を選ばせる
 		DG::Image::SP	GB;//緑背景画像
-		DG::Font::SP    fontA;//現在の状態を表示(通常モード)
-		DG::Font::SP    fontB;//現在の状態を表示(ランダムモード)
-		DG::Font::SP    fontC;//通常モードの二人対戦で開始しますか?
-		DG::Font::SP    fontD;//通常モードのCPU対戦で開始しますか?
-		DG::Font::SP    fontE;//ランダムモードの二人対戦で開始しますか?
-		DG::Font::SP    fontF;//ランダムモードのCPU対戦で開始しますか?
 	};
 	//-------------------------------------------------------------------
 	class  Object : public  BTask
