@@ -489,7 +489,7 @@ namespace  Title {
 					// 大きくする
 				{
 
-					draw = ML::Box2D (0, 420, 456, 150);
+					draw = ML::Box2D (0, 400, 456, 250);
 				}
 				else
 					// 通常サイズ
@@ -511,7 +511,7 @@ namespace  Title {
 					// 大きくする
 				{
 
-					draw = ML::Box2D (412, 420, 456, 150);
+					draw = ML::Box2D (412, 400, 456, 250);
 				}
 				else
 					// 通常サイズ
@@ -531,7 +531,7 @@ namespace  Title {
 					// 大きくする
 				{
 
-					draw = ML::Box2D (838, 420, 456, 150);
+					draw = ML::Box2D (838, 400, 456, 250);
 				}
 				else
 					// 通常サイズ
