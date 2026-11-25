@@ -81,12 +81,6 @@ namespace  Title {
 		this->pagemoveon = DG::Image::Create ("./data/image/pagemoveon.png");//次のページへ
 		this->erabe = DG::Image::Create ("./data/image/選べ!.png");//次のページへ
 		this->GB = DG::Image::Create ("./data/image/GB.png");//背景画像
-		this->fontA = DG::Font::Create ("HGS教科書体", 40, 80);
-		this->fontB = DG::Font::Create ("HGS教科書体", 40, 80);
-		this->fontC = DG::Font::Create ("HGS教科書体", 40, 80);
-		this->fontD = DG::Font::Create ("HGS教科書体", 40, 80);
-		this->fontE = DG::Font::Create ("HGS教科書体", 40, 80);
-		this->fontF = DG::Font::Create ("HGS教科書体", 40, 80);
 		return true;
 	}
 	//-------------------------------------------------------------------
@@ -96,21 +90,11 @@ namespace  Title {
 		this->kyanseru.reset ();
 		this->state.reset ();
 		this->ruru.reset ();
-		this->randommode.reset ();
-		this->randommode1.reset ();
-		this->randommode2.reset ();
-		this->randommode3.reset ();
-		this->tuuzyoumode.reset ();
-		this->tuuzyoumode1.reset ();
-		this->tuuzyoumode2.reset ();
-		this->tuuzyoumode3.reset ();
 		this->twobattle.reset ();
 		this->foottwo.reset ();
 		this->horsetwo.reset ();
 		this->doragontwo.reset ();
 		this->cpubattle.reset ();
-		this->Yes.reset ();
-		this->No.reset ();
 		this->BG.reset ();
 		this->setumei0.reset ();
 		this->setumei1.reset ();
@@ -122,12 +106,7 @@ namespace  Title {
 		this->pageback.reset ();
 		this->pagemoveon.reset ();
 		this->GB.reset ();
-		this->fontA.reset ();
-		this->fontB.reset ();
-		this->fontC.reset ();
-		this->fontD.reset ();
-		this->fontE.reset ();
-		this->fontF.reset ();
+		
 		return true;
 	}
 	//-------------------------------------------------------------------
